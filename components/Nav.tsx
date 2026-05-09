@@ -1,15 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
-
-function Arrow({ size = 12 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M2 7h10M8 3l4 4-4 4" />
-    </svg>
-  );
-}
 
 const LINKS = [
   { label: 'About', href: '#about' },
@@ -17,6 +10,44 @@ const LINKS = [
   { label: 'Blog', href: '/blogs' },
   { label: 'Contact', href: '#contact' },
 ] as const;
+
+function SunIcon() {
+  return (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <div className="nav-theme-toggle" style={{ width: 36, height: 36 }} />;
+
+  const isDark = resolvedTheme === 'dark';
+
+  return (
+    <button
+      className="nav-theme-toggle"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      {isDark ? <SunIcon /> : <MoonIcon />}
+    </button>
+  );
+}
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -43,7 +74,7 @@ export default function Nav() {
             )}
           </ul>
 
-          <a href="#contact" className="nav-cta nav-desktop-cta">Get in Touch</a>
+          <ThemeToggle />
 
           <button
             className="nav-hamburger"

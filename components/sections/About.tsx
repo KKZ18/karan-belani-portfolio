@@ -71,34 +71,6 @@ export default function About() {
             <button className="resume-btn">
               Download Resume <Arrow size={12} />
             </button>
-            <div style={{
-              marginTop: 28, padding: '22px 20px',
-              background: 'var(--bg-2)', border: '1px solid var(--border)',
-              borderRadius: 'var(--r)',
-            }}>
-              <div style={{
-                fontFamily: 'var(--font-mono)', fontSize: '0.63rem',
-                letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: 'var(--ink-3)', marginBottom: 8,
-              }}>
-                Status
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{
-                  width: 7, height: 7, borderRadius: '50%',
-                  background: 'oklch(0.65 0.15 140)', flexShrink: 0,
-                }} />
-                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--ink)' }}>
-                  Open to new opportunities
-                </span>
-              </div>
-              <div style={{
-                fontSize: '0.8125rem', color: 'var(--ink-2)',
-                marginTop: 8, lineHeight: 1.5, fontWeight: 300,
-              }}>
-                Senior Network / Network Automation roles. Remote-friendly.
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function Arrow({ size = 10 }: { size?: number }) {
   return (
@@ -10,51 +10,121 @@ function Arrow({ size = 10 }: { size?: number }) {
   );
 }
 
-const CERTS = [
-  { abbr: 'CCNA', name: 'Cisco Certified Network Associate', issuer: 'Cisco', date: '2023', cat: 'Cisco' },
-  { abbr: 'CCNP\nENT', name: 'CCNP Enterprise', issuer: 'Cisco', date: '2024', cat: 'Cisco' },
-  { abbr: 'SEC+', name: 'CompTIA Security+', issuer: 'CompTIA', date: '2023', cat: 'Security' },
-  { abbr: 'CyberOps\nAssoc', name: 'Cisco CyberOps Associate', issuer: 'Cisco', date: '2024', cat: 'Security' },
-] as const;
+type Cert = {
+  id: number;
+  name: string;
+  fullName: string;
+  issuer: string;
+  year: string;
+  image: string;
+};
 
-const CATS = ['All', 'Cisco', 'Security'] as const;
+const CERTS: Cert[] = [
+  {
+    id: 1,
+    name: 'CCNA',
+    fullName: 'Cisco Certified Network Associate',
+    issuer: 'Cisco',
+    year: '2023',
+    image: '/certs/ccna.jpg',
+  },
+  {
+    id: 2,
+    name: 'CCNP SVPN',
+    fullName: 'Implementing Secure Solutions with Virtual Private Networks',
+    issuer: 'Cisco',
+    year: '2024',
+    image: '/certs/ccnp-svpn.jpg',
+  },
+];
+
+function CertModal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
+  const [imgError, setImgError] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="cert-modal-backdrop"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${cert.name} certificate`}
+    >
+      <div className="cert-modal" onClick={e => e.stopPropagation()}>
+        <button
+          ref={closeRef}
+          className="cert-modal-close"
+          onClick={onClose}
+          aria-label="Close certificate modal"
+        >
+          ×
+        </button>
+        <div className="cert-modal-meta">
+          <span className="cert-modal-name">{cert.name}</span>
+          <span className="cert-modal-issuer">{cert.issuer} · {cert.year}</span>
+        </div>
+        <div className="cert-modal-img-wrap">
+          {imgError ? (
+            <div className="cert-modal-placeholder">
+              <span>{cert.name}</span>
+            </div>
+          ) : (
+            <img
+              src={cert.image}
+              alt={`${cert.fullName} certificate`}
+              onError={() => setImgError(true)}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Certifications() {
-  const [filter, setFilter] = useState<string>('All');
-  const filtered = filter === 'All' ? CERTS : CERTS.filter(c => c.cat === filter);
+  const [modal, setModal] = useState<Cert | null>(null);
 
   return (
     <div className="certs-section" id="certifications">
       <div className="section">
         <div className="section-label">Credentials</div>
         <h2 className="section-heading">Certifications.</h2>
-        <div className="filter-bar">
-          {CATS.map(c => (
-            <button
-              key={c}
-              className={`filter-pill${filter === c ? ' active' : ''}`}
-              onClick={() => setFilter(c)}
+
+        <div className="certs-grid" style={{ marginTop: 40 }}>
+          {CERTS.map(c => (
+            <div
+              key={c.id}
+              className="cert-card"
+              onClick={() => setModal(c)}
+              role="button"
+              tabIndex={0}
+              aria-label={`View ${c.name} certificate`}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModal(c); }}
             >
-              {c}
-            </button>
-          ))}
-        </div>
-        <div className="certs-grid">
-          {filtered.map(c => (
-            <div key={c.name} className="cert-card">
-              <div className="cert-badge-wrap" style={{ whiteSpace: 'pre-line' }}>{c.abbr}</div>
+              <div className="cert-badge-wrap">{c.name}</div>
               <div>
-                <div className="cert-name">{c.name}</div>
+                <div className="cert-name">{c.fullName}</div>
                 <div className="cert-issuer">{c.issuer}</div>
               </div>
               <div className="cert-footer">
-                <span className="cert-date">{c.date}</span>
-                <span className="cert-verify">Verify <Arrow size={10} /></span>
+                <span className="cert-date">{c.year}</span>
+                <span className="cert-verify">View Cert <Arrow size={10} /></span>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {modal && <CertModal cert={modal} onClose={() => setModal(null)} />}
     </div>
   );
 }
