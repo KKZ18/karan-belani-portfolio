@@ -53,9 +53,6 @@ function Tag({ category }: { category: string }) {
 }
 
 export default function BlogPreview({ posts }: Props) {
-  const featured = posts[0] ?? null;
-  const secondary = posts.slice(1, 3);
-
   return (
     <section id="blog">
       <div className="section">
@@ -71,7 +68,7 @@ export default function BlogPreview({ posts }: Props) {
           </Link>
         </div>
 
-        {!featured ? (
+        {posts.length === 0 ? (
           <div style={{
             padding: '48px', textAlign: 'center',
             color: 'var(--ink-3)', fontFamily: 'var(--font-mono)',
@@ -82,42 +79,18 @@ export default function BlogPreview({ posts }: Props) {
           </div>
         ) : (
           <div className="blog-featured">
-            <Link href={`/posts/${featured._sys.filename}`} className="blog-featured-main">
-              <div><Tag category={featured.category} /></div>
-              <div className="blog-title" style={{ fontSize: '1.5rem', lineHeight: 1.25 }}>
-                {featured.title}
-              </div>
-              {featured.description && (
-                <div className="blog-desc">{featured.description}</div>
-              )}
-              <div className="blog-meta" style={{ marginTop: 'auto' }}>
-                {featured.publishedAt && <span>{formatDate(featured.publishedAt)}</span>}
-                {featured.publishedAt && featured.readTime && <span>·</span>}
-                {featured.readTime && <span>{featured.readTime}</span>}
-              </div>
-            </Link>
-
-            {secondary.length > 0 && (
-              <div style={{
-                display: 'grid',
-                gridTemplateRows: `repeat(${secondary.length}, 1fr)`,
-                gap: '1px',
-                background: 'var(--border)',
-              }}>
-                {secondary.map(p => (
-                  <Link key={p.id} href={`/posts/${p._sys.filename}`} className="blog-card">
-                    <Tag category={p.category} />
-                    <div className="blog-title">{p.title}</div>
-                    {p.description && <div className="blog-desc">{p.description}</div>}
-                    <div className="blog-meta">
-                      {p.publishedAt && <span>{formatDate(p.publishedAt)}</span>}
-                      {p.publishedAt && p.readTime && <span>·</span>}
-                      {p.readTime && <span>{p.readTime}</span>}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+            {posts.map(p => (
+              <Link key={p.id} href={`/blogs/${p._sys.filename}`} className="blog-card">
+                <Tag category={p.category} />
+                <div className="blog-title">{p.title}</div>
+                {p.description && <div className="blog-desc">{p.description}</div>}
+                <div className="blog-meta">
+                  {p.publishedAt && <span>{formatDate(p.publishedAt)}</span>}
+                  {p.publishedAt && p.readTime && <span>·</span>}
+                  {p.readTime && <span>{p.readTime}</span>}
+                </div>
+              </Link>
+            ))}
           </div>
         )}
       </div>

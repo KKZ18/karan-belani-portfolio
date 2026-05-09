@@ -5,10 +5,11 @@ import { useTheme } from 'next-themes';
 import Link from 'next/link';
 
 const LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Certifications', href: '#certifications' },
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/#about' },
+  { label: 'Certifications', href: '/#certifications' },
   { label: 'Blog', href: '/blogs' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contact', href: '/#contact' },
 ] as const;
 
 function SunIcon() {
