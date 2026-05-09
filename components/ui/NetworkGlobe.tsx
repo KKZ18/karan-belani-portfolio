@@ -108,7 +108,6 @@ export default function NetworkGlobe() {
         width={500}
         height={500}
         animateIn={false}
-        cameraAltitude={1.6}
         globeImageUrl={null}
         backgroundColor="rgba(0,0,0,0)"
         showGraticules

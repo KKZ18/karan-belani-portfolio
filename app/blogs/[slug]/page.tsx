@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import PostBody from '@/components/blog/PostBody';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://karanbelani.com';
 
 const CATEGORY_LABELS: Record<string, string> = {
   'routing-switching': 'Routing & Switching',
@@ -40,6 +43,39 @@ type RelatedPost = {
   _sys: { filename: string };
 };
 
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const result = await client.queries.postQuery({ relativePath: `${slug}.mdx` });
+    const post = result.data?.post;
+    if (!post) return {};
+    const url = `${SITE_URL}/blogs/${slug}`;
+    return {
+      title: post.title,
+      description: post.description ?? undefined,
+      alternates: { canonical: url },
+      openGraph: {
+        type: 'article',
+        title: post.title,
+        description: post.description ?? undefined,
+        url,
+        publishedTime: post.publishedAt ?? undefined,
+        authors: ['Karan Belani'],
+        tags: [post.category],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.description ?? undefined,
+      },
+    };
+  } catch {
+    return {};
+  }
+}
+
 export async function generateStaticParams() {
   try {
     const result = await client.queries.postListQuery();
@@ -50,8 +86,6 @@ export async function generateStaticParams() {
     return [];
   }
 }
-
-type Props = { params: Promise<{ slug: string }> };
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
@@ -107,10 +141,26 @@ export default async function PostPage({ params }: Props) {
 
   if (!post) notFound();
 
+  const blogPostingSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description ?? undefined,
+    datePublished: post.publishedAt ?? undefined,
+    author: { '@type': 'Person', name: 'Karan Belani', url: SITE_URL },
+    publisher: { '@type': 'Person', name: 'Karan Belani', url: SITE_URL },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/blogs/${slug}` },
+    keywords: post.category,
+  };
+
   return (
     <>
       <Nav />
-      <main style={{ paddingTop: 'var(--nav-h)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+      />
+      <main id="main-content" style={{ paddingTop: 'var(--nav-h)' }}>
         <div className="section post-section">
           <Link href="/blogs" className="post-back">← All posts</Link>
 

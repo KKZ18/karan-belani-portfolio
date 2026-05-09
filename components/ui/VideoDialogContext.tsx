@@ -16,6 +16,8 @@ export const VideoDialogProvider = ({ children }: { children: ReactNode }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
   const openVideo = (url: string) => {
+    const ALLOWED = ['https://www.youtube.com/embed/', 'https://player.vimeo.com/'];
+    if (!ALLOWED.some(prefix => url.startsWith(prefix))) return;
     setVideoUrl(url);
     setIsVideoOpen(true);
   };

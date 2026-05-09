@@ -2,8 +2,23 @@ import { client } from '@/tina/__generated__/client';
 import Nav from '@/components/Nav';
 import BlogList, { type BlogPost, type BlogCategory } from '@/components/blog/BlogList';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://karanbelani.com';
+
+export const metadata: Metadata = {
+  title: 'Blog',
+  description: 'Technical articles on network routing, switching, VPN security, and Cisco lab setups. Notes from a Network Security Engineer.',
+  alternates: { canonical: `${SITE_URL}/blogs` },
+  openGraph: {
+    type: 'website',
+    title: 'Blog | Karan Belani',
+    description: 'Technical articles on network routing, switching, VPN security, and Cisco lab setups.',
+    url: `${SITE_URL}/blogs`,
+  },
+};
 
 export default async function BlogsPage() {
   let posts: BlogPost[] = [];
@@ -47,7 +62,7 @@ export default async function BlogsPage() {
   return (
     <>
       <Nav />
-      <main style={{ paddingTop: 'var(--nav-h)' }}>
+      <main id="main-content" style={{ paddingTop: 'var(--nav-h)' }}>
         <div className="section">
           <div className="blogs-page-header">
             <div>

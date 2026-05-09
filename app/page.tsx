@@ -5,8 +5,33 @@ import About from '@/components/sections/About';
 import Certifications from '@/components/sections/Certifications';
 import BlogPreview, { type PostNode } from '@/components/sections/BlogPreview';
 import Contact from '@/components/sections/Contact';
+import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://karanbelani.com';
+
+export const metadata: Metadata = {
+  alternates: { canonical: SITE_URL },
+};
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Karan Belani',
+  jobTitle: 'Network Security Engineer',
+  url: SITE_URL,
+  knowsAbout: ['Network Security', 'CCNA', 'CCNP SVPN', 'Routing', 'Switching', 'VPN', 'DMVPN', 'Cisco'],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Karan Belani',
+  url: SITE_URL,
+  description: 'Network Security Engineer writing about routing, switching, VPN security, and network automation.',
+  author: { '@type': 'Person', name: 'Karan Belani' },
+};
 
 export default async function Home() {
   let posts: PostNode[] = [];
@@ -35,7 +60,15 @@ export default async function Home() {
   return (
     <>
       <Nav />
-      <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <main id="main-content">
         <Hero />
         <hr className="section-divider" />
         <About />
