@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { Inter as FontSans, Lato, Nunito } from "next/font/google";
+import { Playfair_Display, Instrument_Sans, DM_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { VideoDialogProvider } from "@/components/ui/VideoDialogContext";
 import VideoDialog from "@/components/ui/VideoDialog";
@@ -8,25 +8,28 @@ import VideoDialog from "@/components/ui/VideoDialog";
 import "@/styles.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 
-const fontSans = FontSans({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-display",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
 });
 
-const nunito = Nunito({
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-nunito",
+  variable: "--font-body",
+  weight: ["400", "500", "600"],
 });
 
-const lato = Lato({
+const dmMono = DM_Mono({
   subsets: ["latin"],
-  variable: "--font-lato",
-  weight: "400",
+  variable: "--font-mono",
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Tina",
-  description: "Tina Cloud Starter",
+  title: "Karan Belani — Network Engineer",
+  description: "Network engineer writing about routing, switching, security, and labs.",
 };
 
 export default function RootLayout({
@@ -35,8 +38,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(fontSans.variable, nunito.variable, lato.variable)}>
-      <body className="min-h-screen bg-background font-sans antialiased">
+    <html
+      lang="en"
+      className={cn(playfair.variable, instrumentSans.variable, dmMono.variable)}
+    >
+      <body>
         <VideoDialogProvider>
           {children}
           <VideoDialog />

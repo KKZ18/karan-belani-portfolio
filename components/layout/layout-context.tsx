@@ -1,62 +1,46 @@
 "use client";
-import React, { useState, useContext } from "react";
-import { GlobalQuery } from "../../tina/__generated__/types";
+import React, { useContext } from "react";
 
 interface LayoutState {
-  globalSettings: GlobalQuery["global"];
-  setGlobalSettings: React.Dispatch<
-    React.SetStateAction<GlobalQuery["global"]>
-  >;
-  pageData: {};
-  setPageData: React.Dispatch<React.SetStateAction<{}>>;
-  theme: GlobalQuery["global"]["theme"];
+  theme: { color: string; darkMode: string };
+  globalSettings: any;
+  pageData: any;
+  setGlobalSettings: (v: any) => void;
+  setPageData: (v: any) => void;
 }
 
-const LayoutContext = React.createContext<LayoutState | undefined>(undefined);
-
-export const useLayout = () => {
-  const context = useContext(LayoutContext);
-  return (
-    context || {
-      theme: {
-        color: "blue",
-        darkMode: "default",
-      },
-      globalSettings: undefined,
-      pageData: undefined,
-    }
-  );
+const defaultState: LayoutState = {
+  theme: { color: "blue", darkMode: "default" },
+  globalSettings: undefined,
+  pageData: undefined,
+  setGlobalSettings: () => {},
+  setPageData: () => {},
 };
+
+const LayoutContext = React.createContext<LayoutState>(defaultState);
+
+export const useLayout = () => useContext(LayoutContext);
 
 interface LayoutProviderProps {
   children: React.ReactNode;
-  globalSettings: GlobalQuery["global"];
-  pageData: {};
+  globalSettings?: any;
+  pageData?: any;
 }
 
 export const LayoutProvider: React.FC<LayoutProviderProps> = ({
   children,
-  globalSettings: initialGlobalSettings,
-  pageData: initialPageData,
-}) => {
-  const [globalSettings, setGlobalSettings] = useState<GlobalQuery["global"]>(
-    initialGlobalSettings
-  );
-  const [pageData, setPageData] = useState<{}>(initialPageData);
-
-  const theme = globalSettings.theme;
-
-  return (
-    <LayoutContext.Provider
-      value={{
-        globalSettings,
-        setGlobalSettings,
-        pageData,
-        setPageData,
-        theme,
-      }}
-    >
-      {children}
-    </LayoutContext.Provider>
-  );
-};
+  globalSettings,
+  pageData,
+}) => (
+  <LayoutContext.Provider
+    value={{
+      theme: globalSettings?.theme ?? defaultState.theme,
+      globalSettings,
+      pageData,
+      setGlobalSettings: () => {},
+      setPageData: () => {},
+    }}
+  >
+    {children}
+  </LayoutContext.Provider>
+);
