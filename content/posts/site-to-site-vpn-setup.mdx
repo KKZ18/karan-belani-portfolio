@@ -1,0 +1,29 @@
+---
+title: Setting Up a Site-to-Site VPN
+category: network-security
+publishedAt: 2025-02-10T00:00:00.000Z
+readTime: 8 min read
+description: >
+  Step-by-step guide to configuring an IPsec site-to-site
+  VPN between two Cisco routers.
+---
+
+## IPsec Fundamentals
+
+A site-to-site VPN creates an encrypted tunnel between two network endpoints, allowing traffic to traverse an untrusted network — typically the internet — as if it were traversing a private WAN link. IPsec accomplishes this through two core protocols: AH (Authentication Header) for integrity and origin authentication, and ESP (Encapsulating Security Payload) for encryption plus integrity. In practice, ESP is used almost exclusively because it provides both confidentiality and authentication in a single protocol. The tunnel is negotiated in two phases via IKE (Internet Key Exchange).
+
+### Phase 1: IKE SA Negotiation
+
+Phase 1 establishes a secure, authenticated channel between the two peers — the IKE Security Association. During this phase the routers agree on an encryption algorithm (AES-256 is standard today), a hashing algorithm (SHA-256 or SHA-384), a Diffie-Hellman group for key exchange (Group 14 or higher), and an authentication method (pre-shared key or certificates). The result is a bidirectional IKE SA that protects Phase 2 negotiation. IKEv2 is preferred over IKEv1 in modern deployments for its reduced message count and built-in NAT traversal support.
+
+## Phase 2: IPsec SA and the Crypto Map
+
+Phase 2 uses the secure channel from Phase 1 to negotiate the actual IPsec SAs that protect data traffic. This is where you define the transform set — the combination of ESP encryption and integrity algorithms — and the interesting traffic that should be encrypted, defined by an access control list. On Cisco IOS the configuration looks like this: define the ISAKMP policy, define the pre-shared key for the peer, define the transform set, define the interesting traffic ACL, and bind everything together in a crypto map applied to the outbound interface.
+
+### Interesting Traffic and Routing
+
+The ACL defining interesting traffic must be mirrored on both ends — source and destination swapped. Any packet matching the ACL is intercepted before it leaves the interface and handed to the IPsec engine for encryption. Traffic that does not match the ACL exits unencrypted as normal. A common mistake is including management traffic (SSH, SNMP) in the interesting traffic ACL, which can lock an administrator out if the tunnel goes down. Keep management traffic outside the VPN or maintain an out-of-band path.
+
+## Verifying the Tunnel
+
+Once configuration is complete on both peers, trigger interesting traffic to bring the tunnel up and verify with `show crypto isakmp sa` and `show crypto ipsec sa`. The ISAKMP SA should show state QM_IDLE (IKEv1) or READY (IKEv2), and the IPsec SA should show non-zero encaps and decaps counters incrementing symmetrically. If Phase 1 fails, mismatched ISAKMP policies are the most common cause. If Phase 1 succeeds but Phase 2 fails, check for ACL mismatches or transform set disagreements. Packet captures on the outside interface should show ESP-encapsulated packets to confirm encryption is functioning end to end.

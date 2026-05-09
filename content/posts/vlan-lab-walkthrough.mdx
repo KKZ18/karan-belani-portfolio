@@ -1,0 +1,29 @@
+---
+title: VLAN Lab Walkthrough
+category: labs
+publishedAt: 2025-03-05T00:00:00.000Z
+readTime: 5 min read
+description: >
+  Hands-on VLAN segmentation lab with full switch
+  configuration walkthrough.
+---
+
+## Lab Topology
+
+This lab uses three Cisco Catalyst switches in a small access-distribution design. SW1 acts as the distribution switch and the root bridge for all VLANs. SW2 and SW3 are access switches, each serving a separate floor. The goal is to segment traffic into four VLANs: VLAN 10 (Management), VLAN 20 (Engineering), VLAN 30 (Sales), and VLAN 99 (Native). Inter-VLAN routing is handled by a Layer 3 switch virtual interface (SVI) on SW1. All inter-switch links are 802.1Q trunks.
+
+### Step 1: Create VLANs on All Switches
+
+Start by defining VLANs in the VLAN database on each switch before assigning ports. This ensures the VLAN exists locally before trunking begins. On each switch enter `vlan 10`, `name MANAGEMENT`, then repeat for VLANs 20, 30, and 99. Verify with `show vlan brief` — all four VLANs should appear as active with no ports assigned yet. VLANs not in the database will be pruned from trunks even if the trunk allows them, which is a frequent source of confusion during initial lab setup.
+
+## Step 2: Configure Trunk Links
+
+Uplinks between access switches and the distribution switch must carry all VLANs. Configure each inter-switch port as a trunk with `switchport mode trunk` and explicitly set the native VLAN to 99 with `switchport trunk native vlan 99`. Explicitly allow VLANs 10, 20, 30, and 99 with `switchport trunk allowed vlan 10,20,30,99` — the default of allowing all VLANs is a security risk in production. Verify trunks with `show interfaces trunk` on SW1 and confirm all expected VLANs appear in the allowed and forwarding columns.
+
+### Step 3: Assign Access Ports
+
+On SW2 and SW3, assign each access port to its appropriate VLAN. Ports connected to Engineering workstations get `switchport access vlan 20`, Sales workstations get `switchport access vlan 30`, and management ports for OOB access get `switchport access vlan 10`. Set each port to `switchport mode access` explicitly — never rely on DTP auto-negotiation in a production or lab environment. Confirm with `show interfaces switchport` that each port shows the correct access VLAN and mode.
+
+## Step 4: Configure SVIs for Inter-VLAN Routing
+
+On SW1, create an SVI for each VLAN to enable inter-VLAN routing. Assign gateway addresses: `interface vlan 10` with `ip address 192.168.10.1 255.255.255.0`, VLAN 20 with `192.168.20.1`, and VLAN 30 with `192.168.30.1`. Enable `ip routing` globally. Verify end-to-end connectivity by pinging from an Engineering host (192.168.20.x) to a Sales host (192.168.30.x) — traffic should traverse SW1's routing engine. Use `show ip route` on SW1 to confirm connected routes for all three subnets are present and `show mac address-table` to verify MAC learning is functioning correctly per VLAN.

@@ -1,0 +1,31 @@
+---
+title: Understanding OSPF Areas
+category: routing-switching
+publishedAt: 2025-01-15T00:00:00.000Z
+readTime: 6 min read
+description: >
+  A practical breakdown of OSPF area types and when to
+  use them in enterprise network design.
+---
+
+## Why OSPF Areas Exist
+
+OSPF is a link-state routing protocol, which means every router within a single area maintains an identical copy of the link-state database (LSDB). In small networks this is manageable, but as the topology grows, the LSDB grows with it — and so does the computational overhead of the Dijkstra SPF algorithm. Areas solve this by creating boundaries that limit LSA flooding. Routers within an area know the full topology of that area, but only summarized information about routes beyond it.
+
+### Area 0: The Backbone
+
+Every OSPF deployment revolves around Area 0, the backbone area. All other areas must connect to Area 0, either physically or through a virtual link. Area Border Routers (ABRs) sit at the boundary between Area 0 and non-backbone areas, summarizing and translating routing information between them. If your network has only one area, it should be Area 0 — there are no exceptions to this rule in standard OSPF design.
+
+## Stub and Totally Stubby Areas
+
+Stub areas reduce LSA overhead by blocking external LSAs (Type 5) from entering the area. Routers inside a stub area reach external destinations via a default route injected by the ABR. This is useful when an area has no need to make granular routing decisions about external prefixes — a branch office with a single uplink is a classic example.
+
+Totally stubby areas go further, blocking both external LSAs and inter-area summary LSAs (Type 3). Only the default route from the ABR is permitted. This produces the smallest possible LSDB in the area and is a Cisco proprietary extension, though widely supported. The trade-off is loss of visibility — routers in a totally stubby area cannot prefer one external path over another.
+
+### NSSA: Not-So-Stubby Areas
+
+When an area needs to block external LSAs from the backbone but still redistribute external routes of its own, NSSA (Not-So-Stubby Area) is the answer. An NSSA ASBR generates Type 7 LSAs instead of Type 5. When those routes reach the ABR, they are translated to Type 5 LSAs and flooded into Area 0. This is common in hub-and-spoke designs where a spoke site runs a separate routing protocol — such as EIGRP or static routes — and needs to redistribute those prefixes into OSPF without polluting the backbone with full external LSA tables.
+
+## Choosing the Right Area Type
+
+The decision tree is straightforward in practice. Use a standard area when routers need full visibility of external routes. Use a stub area when external routes are irrelevant and a single default route suffices. Use totally stubby when you want to minimize LSDB size to its absolute minimum. Use NSSA when the area originates external routes but should not receive them from the backbone. Getting this right at design time avoids painful restructuring later — OSPF area types cannot be changed on a live network without briefly disrupting routing within the affected area.
