@@ -325,6 +325,15 @@
 .hero-content {
   max-width: var(--max); margin: 0 auto; width: 100%;
   padding-top: var(--nav-h); position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px;
+}
+.hero-left { display: flex; flex-direction: column; }
+.hero-right {
+  display: flex; justify-content: center; align-items: center;
+}
+.globe-wrap {
+  width: 500px; height: 500px;
+  display: flex; justify-content: center; align-items: center;
 }
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: 10px;
@@ -747,6 +756,10 @@
   .nav-desktop-links, .nav-desktop-cta { display: none; }
   .nav-hamburger { display: flex; }
   .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 56px; }
+}
+@media (max-width: 768px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
 }
 @media (max-width: 600px) {
   .section { padding: 72px 20px; }
