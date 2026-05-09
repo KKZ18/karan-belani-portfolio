@@ -1,10 +1,18 @@
-export default function Home() {
+import React from "react";
+import client from "@/tina/__generated__/client";
+import Layout from "@/components/layout/layout";
+import ClientPage from "./[...urlSegments]/client-page";
+
+export const revalidate = 300;
+
+export default async function Home() {
+  const data = await client.queries.page({
+    relativePath: `home.mdx`,
+  });
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-bold">Hello World</h1>
-      <p className="mt-4 text-lg text-gray-600">
-        Karan Belani &mdash; Network Engineer
-      </p>
-    </main>
+    <Layout rawPageData={data}>
+      <ClientPage {...data} />
+    </Layout>
   );
 }
