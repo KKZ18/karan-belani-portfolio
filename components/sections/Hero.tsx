@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NetworkGlobe from '@/components/ui/NetworkGlobe';
 
 function Arrow({ size = 13 }: { size?: number }) {
   return (
@@ -14,22 +15,27 @@ export default function Hero() {
       <div className="hero-bg" />
       <div className="hero-bg-glow" />
       <div className="hero-content">
-        <div className="hero-eyebrow">
-          <div className="hero-eyebrow-dot" />
-          Network Security Engineer
+        <div className="hero-left">
+          <div className="hero-eyebrow">
+            <div className="hero-eyebrow-dot" />
+            Network Security Engineer
+          </div>
+          <h1 className="hero-title">
+            Karan<br />Belani<span style={{ color: 'var(--accent)' }}>.</span>
+          </h1>
+          <p className="hero-tagline">
+            Building and breaking networks.<br />
+            <span>Writing about both.</span>
+          </p>
+          <div className="hero-ctas">
+            <Link href="/blogs" className="btn-primary">
+              Read Blog <Arrow size={13} />
+            </Link>
+            <a href="#contact" className="btn-ghost">Get in Touch</a>
+          </div>
         </div>
-        <h1 className="hero-title">
-          Karan<br />Belani<span style={{ color: 'var(--accent)' }}>.</span>
-        </h1>
-        <p className="hero-tagline">
-          Building and breaking networks.<br />
-          <span>Writing about both.</span>
-        </p>
-        <div className="hero-ctas">
-          <Link href="/blogs" className="btn-primary">
-            Read Blog <Arrow size={13} />
-          </Link>
-          <a href="#contact" className="btn-ghost">Get in Touch</a>
+        <div className="hero-right">
+          <NetworkGlobe />
         </div>
       </div>
       <div className="hero-scroll">
