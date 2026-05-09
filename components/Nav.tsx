@@ -55,7 +55,9 @@ export default function Nav() {
 
   return (
     <>
-      <nav className="site-nav">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+
+      <nav className="site-nav" aria-label="Main navigation">
         <div className="nav-inner">
           <a href="/" className="nav-logo">
             Karan<span>.</span>Belani
@@ -80,7 +82,9 @@ export default function Nav() {
           <button
             className="nav-hamburger"
             onClick={() => setOpen(o => !o)}
-            aria-label="Toggle menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
           >
             <span style={{ transform: open ? 'rotate(45deg) translate(4px,5px)' : undefined }} />
             <span style={{ opacity: open ? 0 : 1 }} />
@@ -89,7 +93,12 @@ export default function Nav() {
         </div>
       </nav>
 
-      <div className={`mobile-menu${open ? ' open' : ''}`}>
+      <nav
+        id="mobile-nav"
+        className={`mobile-menu${open ? ' open' : ''}`}
+        aria-label="Mobile navigation"
+        aria-hidden={!open}
+      >
         {LINKS.map(l =>
           l.href.startsWith('/') ? (
             <Link key={l.label} href={l.href} className="mobile-menu-link" onClick={() => setOpen(false)}>
@@ -101,7 +110,7 @@ export default function Nav() {
             </a>
           )
         )}
-      </div>
+      </nav>
     </>
   );
 }
