@@ -28,6 +28,73 @@ const config = defineConfig({
   schema: {
     collections: [
       {
+        label: 'Homepage',
+        name: 'global',
+        path: 'content/global',
+        format: 'json',
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          {
+            type: 'object',
+            name: 'hero',
+            label: 'Hero Section',
+            fields: [
+              { type: 'string', name: 'eyebrow',   label: 'Eyebrow Label' },
+              { type: 'string', name: 'tagline1',  label: 'Tagline — Line 1' },
+              { type: 'string', name: 'tagline2',  label: 'Tagline — Line 2 (accent colour)' },
+              { type: 'string', name: 'cta1Label', label: 'Primary Button Label' },
+              { type: 'string', name: 'cta1Href',  label: 'Primary Button URL' },
+              { type: 'string', name: 'cta2Label', label: 'Secondary Button Label' },
+              { type: 'string', name: 'cta2Href',  label: 'Secondary Button URL' },
+            ],
+          },
+          {
+            type: 'object',
+            name: 'about',
+            label: 'About Section',
+            fields: [
+              { type: 'string', name: 'headingLine1', label: 'Heading — Line 1' },
+              { type: 'string', name: 'headingLine2', label: 'Heading — Line 2' },
+              { type: 'string', name: 'bio', label: 'Bio Paragraph', ui: { component: 'textarea' } },
+              {
+                type: 'object',
+                name: 'stats',
+                label: 'Stats',
+                list: true,
+                ui: { itemProps: (item: any) => ({ label: `${item?.value} — ${item?.label}` }) },
+                fields: [
+                  { type: 'string', name: 'value', label: 'Value (e.g. 2+)' },
+                  { type: 'string', name: 'label', label: 'Label (e.g. Years experience)' },
+                ],
+              },
+              {
+                type: 'object',
+                name: 'socials',
+                label: 'Social Links',
+                list: true,
+                ui: { itemProps: (item: any) => ({ label: item?.name }) },
+                fields: [
+                  { type: 'string', name: 'name',   label: 'Platform' },
+                  { type: 'string', name: 'handle', label: 'Handle / Username' },
+                  { type: 'string', name: 'url',    label: 'URL' },
+                ],
+              },
+              { type: 'string', name: 'resumeUrl', label: 'Resume URL' },
+            ],
+          },
+          {
+            type: 'object',
+            name: 'contact',
+            label: 'Contact Section',
+            fields: [
+              { type: 'string', name: 'heading',      label: 'Heading' },
+              { type: 'string', name: 'intro',        label: 'Intro Text', ui: { component: 'textarea' } },
+              { type: 'string', name: 'responseTime', label: 'Response Time Note' },
+            ],
+          },
+        ],
+      },
+      {
         label: 'Categories',
         name: 'category',
         path: 'content/categories',

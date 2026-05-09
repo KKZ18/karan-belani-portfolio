@@ -6,41 +6,53 @@ function Arrow({ size = 12 }: { size?: number }) {
   );
 }
 
-const STATS = [
-  ['2+', 'Years experience'],
-  ['4', 'Certifications'],
-  ['10+', 'Articles published'],
-  ['∞', 'Lab hours'],
-] as const;
+export type Social = { name: string; handle: string; url: string };
+export type Stat   = { value: string; label: string };
 
-const SOCIALS = [
-  { name: 'LinkedIn', handle: 'Karan Belani' },
-  { name: 'GitHub', handle: '@karanbelani' },
-  { name: 'Twitter / X', handle: '@kbelani' },
-] as const;
+export type AboutContent = {
+  headingLine1: string;
+  headingLine2: string;
+  bio:          string;
+  stats:        Stat[];
+  socials:      Social[];
+  resumeUrl?:   string | null;
+};
 
-export default function About() {
+const DEFAULTS: AboutContent = {
+  headingLine1: 'Network Engineer.',
+  headingLine2: 'Lifelong learner.',
+  bio: "I'm Karan, a Network Engineer focused on building, securing, and troubleshooting real-world networks.",
+  stats: [
+    { value: '2+',  label: 'Years experience' },
+    { value: '4',   label: 'Certifications' },
+    { value: '10+', label: 'Articles published' },
+    { value: '∞',   label: 'Lab hours' },
+  ],
+  socials: [
+    { name: 'LinkedIn',    handle: 'Karan Belani', url: '#' },
+    { name: 'GitHub',      handle: '@karanbelani', url: '#' },
+    { name: 'Twitter / X', handle: '@kbelani',     url: '#' },
+  ],
+};
+
+export default function About({ content }: { content?: AboutContent | null }) {
+  const c = { ...DEFAULTS, ...content };
+
   return (
     <section id="about">
       <div className="section">
         <div className="section-label">About</div>
         <h2 className="section-heading">
-          Network Engineer.<br />Lifelong learner.
+          {c.headingLine1}<br />{c.headingLine2}
         </h2>
         <div className="about-grid">
           <div className="about-bio">
-            <p>
-              I&apos;m Karan, a Network Engineer focused on building, securing, and troubleshooting
-              real-world networks. I work with technologies like routing, switching, VPNs, and
-              network security across enterprise environments. This blog is where I share hands-on
-              labs, configurations, and practical insights from my daily work — no theory overload,
-              just real networking.
-            </p>
+            <p>{c.bio}</p>
             <div className="about-stats">
-              {STATS.map(([num, label]) => (
-                <div key={label} className="about-stat">
-                  <div className="about-stat-num">{num}</div>
-                  <div className="about-stat-label">{label}</div>
+              {c.stats.map(s => (
+                <div key={s.label} className="about-stat">
+                  <div className="about-stat-num">{s.value}</div>
+                  <div className="about-stat-label">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -55,8 +67,14 @@ export default function About() {
               Find me online
             </div>
             <div className="about-links">
-              {SOCIALS.map(s => (
-                <a key={s.name} href="#" className="about-link">
+              {c.socials.map(s => (
+                <a
+                  key={s.name}
+                  href={s.url || '#'}
+                  className="about-link"
+                  target={s.url && s.url !== '#' ? '_blank' : undefined}
+                  rel="noopener noreferrer"
+                >
                   <div className="about-link-left">
                     <div className="about-link-dot" />
                     <div>
@@ -68,9 +86,15 @@ export default function About() {
                 </a>
               ))}
             </div>
-            <button className="resume-btn">
-              Download Resume <Arrow size={12} />
-            </button>
+            {c.resumeUrl ? (
+              <a href={c.resumeUrl} className="resume-btn" target="_blank" rel="noopener noreferrer">
+                Download Resume <Arrow size={12} />
+              </a>
+            ) : (
+              <button className="resume-btn">
+                Download Resume <Arrow size={12} />
+              </button>
+            )}
           </div>
         </div>
       </div>

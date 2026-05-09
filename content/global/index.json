@@ -1,58 +1,57 @@
 {
-  "header": {
-    "icon": {
-      "name": "Tina",
-      "color": "orange",
-      "style": "float"
-    },
-    "name": "Tina Starter",
-    "color": "default",
-    "nav": [
-      {
-        "href": "/",
-        "label": "Home"
-      },
-      {
-        "href": "/about",
-        "label": "About"
-      },
-      {
-        "href": "/posts",
-        "label": "Blog"
-      }
-    ]
+  "hero": {
+    "eyebrow": "Network Security Engineer",
+    "tagline1": "Building and breaking networks.",
+    "tagline2": "Writing about both.",
+    "cta1Label": "Read Blog",
+    "cta1Href": "/blogs",
+    "cta2Label": "Get in Touch",
+    "cta2Href": "#contact"
   },
-  "footer": {
-    "social": [
+  "about": {
+    "headingLine1": "Network Engineer.",
+    "headingLine2": "Lifelong learner.",
+    "bio": "I'm Karan, a Network Engineer focused on building, securing, and troubleshooting real-world networks. I work with technologies like routing, switching, VPNs, and network security across enterprise environments. This blog is where I share hands-on labs, configurations, and practical insights from my daily work — no theory overload, just real networking.",
+    "stats": [
       {
-        "icon": {
-          "name": "FaLinkedin"
-        },
-        "url": "https://www.linkedin.com/company/tinacms"
+        "value": "2+",
+        "label": "Years experience"
       },
       {
-        "icon": {
-          "name": "FaGithub"
-        },
-        "url": "https://github.com/tinacms/tinacms"
+        "value": "4",
+        "label": "Certifications"
       },
       {
-        "icon": {
-          "name": "FaYoutube"
-        },
-        "url": "https://www.youtube.com/@TinaCMS"
+        "value": "2+",
+        "label": "Articles published"
       },
       {
-        "icon": {
-          "name": "FaXTwitter"
-        },
-        "url": "https://x.com/TinaCMS"
+        "value": "∞",
+        "label": "Lab hours"
       }
-    ]
+    ],
+    "socials": [
+      {
+        "name": "LinkedIn",
+        "handle": "Karan Belani",
+        "url": "#"
+      },
+      {
+        "name": "GitHub",
+        "handle": "@karanbelani",
+        "url": "#"
+      },
+      {
+        "name": "Twitter / X",
+        "handle": "@kbelani",
+        "url": "#"
+      }
+    ],
+    "resumeUrl": ""
   },
-  "theme": {
-    "color": "blue",
-    "font": "sans",
-    "darkMode": "light"
+  "contact": {
+    "heading": "Say hello.",
+    "intro": "Have a question, want to collaborate, or just want to talk networking? I'm always happy to connect with other engineers, hiring managers, or anyone curious about the field.",
+    "responseTime": "Typical response time: 2–3 business days."
   }
 }

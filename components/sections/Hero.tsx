@@ -9,7 +9,29 @@ function Arrow({ size = 13 }: { size?: number }) {
   );
 }
 
-export default function Hero() {
+export type HeroContent = {
+  eyebrow:   string;
+  tagline1:  string;
+  tagline2:  string;
+  cta1Label: string;
+  cta1Href:  string;
+  cta2Label: string;
+  cta2Href:  string;
+};
+
+const DEFAULTS: HeroContent = {
+  eyebrow:   'Network Security Engineer',
+  tagline1:  'Building and breaking networks.',
+  tagline2:  'Writing about both.',
+  cta1Label: 'Read Blog',
+  cta1Href:  '/blogs',
+  cta2Label: 'Get in Touch',
+  cta2Href:  '#contact',
+};
+
+export default function Hero({ content }: { content?: HeroContent | null }) {
+  const c = { ...DEFAULTS, ...content };
+
   return (
     <section id="hero" className="hero">
       <div className="hero-bg" />
@@ -18,20 +40,20 @@ export default function Hero() {
         <div className="hero-left">
           <div className="hero-eyebrow">
             <div className="hero-eyebrow-dot" />
-            Network Security Engineer
+            {c.eyebrow}
           </div>
           <h1 className="hero-title">
             Karan<br />Belani<span style={{ color: 'var(--accent)' }}>.</span>
           </h1>
           <p className="hero-tagline">
-            Building and breaking networks.<br />
-            <span>Writing about both.</span>
+            {c.tagline1}<br />
+            <span>{c.tagline2}</span>
           </p>
           <div className="hero-ctas">
-            <Link href="/blogs" className="btn-primary">
-              Read Blog <Arrow size={13} />
+            <Link href={c.cta1Href} className="btn-primary">
+              {c.cta1Label} <Arrow size={13} />
             </Link>
-            <a href="#contact" className="btn-ghost">Get in Touch</a>
+            <a href={c.cta2Href} className="btn-ghost">{c.cta2Label}</a>
           </div>
         </div>
         <div className="hero-right">
