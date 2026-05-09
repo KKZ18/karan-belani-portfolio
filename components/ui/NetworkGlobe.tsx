@@ -7,9 +7,8 @@ const Globe = dynamic(() => import('react-globe.gl'), {
   ssr: false,
 });
 
-// Approximate hex for oklch(0.66 0.12 194)
-const ACCENT = '#3ecfca';
-const ARC_COLOR_START = `${ACCENT}99`;
+const ACCENT = '#0891b2';
+const ARC_COLOR_START = `${ACCENT}cc`;
 const ARC_COLOR_END = `${ACCENT}22`;
 
 type ArcDatum = {
@@ -26,6 +25,13 @@ type PointDatum = {
   lng: number;
 };
 
+function makePoints(n: number): PointDatum[] {
+  return Array.from({ length: n }, () => ({
+    lat: (Math.random() - 0.5) * 180,
+    lng: (Math.random() - 0.5) * 360,
+  }));
+}
+
 function makeArcs(points: PointDatum[], n: number): ArcDatum[] {
   return Array.from({ length: n }, () => {
     const start = points[Math.floor(Math.random() * points.length)];
@@ -40,13 +46,6 @@ function makeArcs(points: PointDatum[], n: number): ArcDatum[] {
       initialGap: Math.random(),
     };
   });
-}
-
-function makePoints(n: number): PointDatum[] {
-  return Array.from({ length: n }, () => ({
-    lat: (Math.random() - 0.5) * 180,
-    lng: (Math.random() - 0.5) * 360,
-  }));
 }
 
 export default function NetworkGlobe() {
@@ -71,10 +70,14 @@ export default function NetworkGlobe() {
       const controls = globeEl.current.controls();
 
       controls.autoRotate = true;
-      controls.autoRotateSpeed = 1.5;
+      controls.autoRotateSpeed = 1.8;
 
       controls.enableZoom = false;
       controls.enablePan = false;
+
+      // fully lock zoom
+      controls.minDistance = 300;
+      controls.maxDistance = 300;
 
       controls.update();
 
@@ -86,7 +89,7 @@ export default function NetworkGlobe() {
         setTimeout(() => {
           controls.autoRotate = true;
           controls.update();
-        }, 1500);
+        }, 1200);
       };
 
       controls.addEventListener('start', onDragStart);
@@ -105,11 +108,12 @@ export default function NetworkGlobe() {
         width={500}
         height={500}
         animateIn={false}
+        cameraAltitude={1.6}
         globeImageUrl={null}
         backgroundColor="rgba(0,0,0,0)"
         showGraticules
         showAtmosphere
-        atmosphereColor={ACCENT}
+        atmosphereColor="#0e7490"
         atmosphereAltitude={0.2}
         arcsData={arcs}
         arcStartLat="startLat"
@@ -121,13 +125,13 @@ export default function NetworkGlobe() {
         arcDashGap={0.85}
         arcDashInitialGap={(arc: any) => arc.initialGap}
         arcDashAnimateTime={(arc: any) => arc.animateTime}
-        arcStroke={0.4}
+        arcStroke={0.5}
         pointsData={points}
         pointLat="lat"
         pointLng="lng"
         pointColor={() => ACCENT}
         pointAltitude={0.01}
-        pointRadius={0.35}
+        pointRadius={0.4}
         enablePointerInteraction
       />
     </div>

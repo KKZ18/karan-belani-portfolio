@@ -769,3 +769,16 @@
   .site-footer { padding: 32px 20px; }
   .mobile-menu { padding: 48px 20px; }
 }
+.globe-wrap {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: radial-gradient(
+    circle,
+    rgba(8, 145, 178, 0.12) 0%,
+    transparent 70%
+  );
+}
