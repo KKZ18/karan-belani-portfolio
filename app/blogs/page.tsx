@@ -1,0 +1,79 @@
+import { client } from '@/tina/__generated__/client';
+import Nav from '@/components/Nav';
+import BlogList, { type BlogPost, type BlogCategory } from '@/components/blog/BlogList';
+import Link from 'next/link';
+
+export const dynamic = 'force-dynamic';
+
+export default async function BlogsPage() {
+  let posts: BlogPost[] = [];
+  let categories: BlogCategory[] = [];
+
+  try {
+    const [postsResult, catsResult] = await Promise.all([
+      client.queries.postListQuery(),
+      client.queries.categoryListQuery(),
+    ]);
+
+    const edges = postsResult.data?.postConnection?.edges ?? [];
+    for (const edge of edges) {
+      const n = edge?.node;
+      if (!n) continue;
+      posts.push({
+        id: n.id,
+        title: n.title,
+        category: n.category,
+        publishedAt: n.publishedAt ?? null,
+        readTime: n.readTime ?? null,
+        description: n.description ?? null,
+        _sys: { filename: n._sys.filename },
+      });
+    }
+
+    const catEdges = catsResult.data?.categoryConnection?.edges ?? [];
+    for (const edge of catEdges) {
+      const n = edge?.node;
+      if (!n) continue;
+      categories.push({
+        id: n.id,
+        name: n.name,
+        _sys: { filename: n._sys.filename },
+      });
+    }
+  } catch {
+    // TinaCMS server unavailable at build time
+  }
+
+  return (
+    <>
+      <Nav />
+      <main style={{ paddingTop: 'var(--nav-h)' }}>
+        <div className="section">
+          <div className="blogs-page-header">
+            <div>
+              <div className="section-label">Writing</div>
+              <h1 className="section-heading">All Articles.</h1>
+            </div>
+            <Link href="/#blog" className="view-all" style={{ alignSelf: 'flex-end' }}>
+              ← Back to home
+            </Link>
+          </div>
+
+          <BlogList posts={posts} categories={categories} />
+        </div>
+
+        <div className="site-footer">
+          <div className="footer-inner">
+            <span className="footer-copy">© 2025 Karan Belani — Network Engineer</span>
+            <div className="footer-links">
+              <a href="/#about" className="footer-link">About</a>
+              <a href="/#certifications" className="footer-link">Certs</a>
+              <a href="/#blog" className="footer-link">Blog</a>
+              <a href="/#contact" className="footer-link">Contact</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+}
