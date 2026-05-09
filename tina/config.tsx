@@ -1,12 +1,6 @@
 import { defineConfig } from "tinacms";
 import nextConfig from '../next.config'
 
-import Post from "./collection/post";
-import Global from "./collection/global";
-import Author from "./collection/author";
-import Page from "./collection/page";
-import Tag from "./collection/tag";
-
 const config = defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
   branch:
@@ -32,7 +26,72 @@ const config = defineConfig({
     basePath: nextConfig.basePath?.replace(/^\//, '') || '', // The base path of the app (could be /blog)
   },
   schema: {
-    collections: [Page, Post, Author, Tag, Global],
+    collections: [
+      {
+        label: 'Categories',
+        name: 'category',
+        path: 'content/categories',
+        format: 'json',
+        fields: [
+          {
+            type: 'string',
+            name: 'name',
+            label: 'Category Name',
+            required: true,
+          },
+          {
+            type: 'string',
+            name: 'description',
+            label: 'Description',
+          },
+        ],
+      },
+      {
+        label: 'Posts',
+        name: 'post',
+        path: 'content/posts',
+        format: 'mdx',
+        fields: [
+          {
+            type: 'string',
+            name: 'title',
+            label: 'Title',
+            isTitle: true,
+            required: true,
+          },
+          {
+            type: 'string',
+            name: 'category',
+            label: 'Category Slug',
+            required: true,
+          },
+          {
+            type: 'datetime',
+            name: 'publishedAt',
+            label: 'Published At',
+          },
+          {
+            type: 'string',
+            name: 'readTime',
+            label: 'Read Time',
+          },
+          {
+            type: 'string',
+            name: 'description',
+            label: 'Description',
+            ui: {
+              component: 'textarea',
+            },
+          },
+          {
+            type: 'rich-text',
+            name: 'body',
+            label: 'Content',
+            isBody: true,
+          },
+        ],
+      },
+    ],
   },
 });
 
