@@ -6,6 +6,9 @@ import Certifications from '@/components/sections/Certifications';
 import BlogPreview, { type PostNode } from '@/components/sections/BlogPreview';
 import Contact from '@/components/sections/Contact';
 import type { Metadata } from 'next';
+import type { HeroContent } from '@/components/sections/Hero';
+import type { AboutContent, Social } from '@/components/sections/About';
+import type { ContactContent } from '@/components/sections/Contact';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,10 +38,18 @@ const websiteSchema = {
 
 export default async function Home() {
   let posts: PostNode[] = [];
+  let hero: HeroContent | null = null;
+  let about: AboutContent | null = null;
+  let contact: ContactContent | null = null;
+  let socials: Social[] = [];
 
   try {
-    const result = await client.queries.postListQuery();
-    const edges = result.data?.postConnection?.edges ?? [];
+    const [postsResult, globalResult] = await Promise.all([
+      client.queries.postListQuery(),
+      client.queries.globalQuery({ relativePath: 'index.json' }),
+    ]);
+
+    const edges = postsResult.data?.postConnection?.edges ?? [];
     for (const edge of edges) {
       const n = edge?.node;
       if (!n) continue;
@@ -53,8 +64,45 @@ export default async function Home() {
       });
       if (posts.length === 3) break;
     }
+
+    const g = globalResult.data?.global;
+    if (g) {
+      if (g.hero) {
+        hero = {
+          eyebrow:   g.hero.eyebrow   ?? '',
+          tagline1:  g.hero.tagline1  ?? '',
+          tagline2:  g.hero.tagline2  ?? '',
+          cta1Label: g.hero.cta1Label ?? '',
+          cta1Href:  g.hero.cta1Href  ?? '/blogs',
+          cta2Label: g.hero.cta2Label ?? '',
+          cta2Href:  g.hero.cta2Href  ?? '#contact',
+        };
+      }
+      if (g.about) {
+        socials = (g.about.socials ?? []).flatMap(s =>
+          s ? [{ name: s.name ?? '', handle: s.handle ?? '', url: s.url ?? '#' }] : []
+        );
+        about = {
+          headingLine1: g.about.headingLine1 ?? '',
+          headingLine2: g.about.headingLine2 ?? '',
+          bio:          g.about.bio          ?? '',
+          stats: (g.about.stats ?? []).flatMap(s =>
+            s ? [{ value: s.value ?? '', label: s.label ?? '' }] : []
+          ),
+          socials,
+          resumeUrl: g.about.resumeUrl ?? null,
+        };
+      }
+      if (g.contact) {
+        contact = {
+          heading:      g.contact.heading      ?? '',
+          intro:        g.contact.intro        ?? '',
+          responseTime: g.contact.responseTime ?? '',
+        };
+      }
+    }
   } catch {
-    // TinaCMS server unavailable at build time
+    // TinaCMS server unavailable — components fall back to built-in defaults
   }
 
   return (
@@ -69,13 +117,13 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
       <main id="main-content">
-        <Hero />
+        <Hero content={hero} />
         <hr className="section-divider" />
-        <About />
+        <About content={about} />
         <Certifications />
         <hr className="section-divider" />
         <BlogPreview posts={posts} />
-        <Contact />
+        <Contact content={contact} socials={socials} />
         <div className="site-footer">
           <div className="footer-inner">
             <span className="footer-copy">© 2025 Karan Belani — Network Engineer</span>

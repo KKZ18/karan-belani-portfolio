@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { Social } from './About';
 
 function Arrow({ size = 13 }: { size?: number }) {
   return (
@@ -10,15 +11,28 @@ function Arrow({ size = 13 }: { size?: number }) {
   );
 }
 
-const SOCIALS = [
-  { name: 'LinkedIn', handle: 'Karan Belani' },
-  { name: 'GitHub', handle: '@karanbelani' },
-  { name: 'Twitter / X', handle: '@kbelani' },
-] as const;
+export type ContactContent = {
+  heading:      string;
+  intro:        string;
+  responseTime: string;
+};
+
+const DEFAULTS: ContactContent = {
+  heading:      'Say hello.',
+  intro:        'Have a question, want to collaborate, or just want to talk networking? I\'m always happy to connect.',
+  responseTime: 'Typical response time: 2–3 business days.',
+};
 
 type FormFields = { name: string; email: string; message: string };
 
-export default function Contact() {
+export default function Contact({
+  content,
+  socials = [],
+}: {
+  content?: ContactContent | null;
+  socials?: Social[];
+}) {
+  const c = { ...DEFAULTS, ...content };
   const [form, setForm] = useState<FormFields>({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState<Partial<Record<keyof FormFields, boolean>>>({});
   const [sent, setSent] = useState(false);
@@ -38,40 +52,44 @@ export default function Contact() {
       <section id="contact">
         <div className="section">
           <div className="section-label">Contact</div>
-          <h2 className="section-heading">Say hello.</h2>
+          <h2 className="section-heading">{c.heading}</h2>
           <div className="contact-grid">
             <div>
-              <p className="contact-intro">
-                Have a question, want to collaborate, or just want to talk networking?
-                I&apos;m always happy to connect with other engineers, hiring managers, or
-                anyone curious about the field.
-              </p>
-              <p className="contact-sub">Typical response time: 2–3 business days.</p>
-              <div style={{ marginTop: 40 }}>
-                <div style={{
-                  fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
-                  letterSpacing: '0.12em', textTransform: 'uppercase',
-                  color: 'var(--ink-3)', marginBottom: 14,
-                }}>
-                  Also at
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {SOCIALS.map(s => (
-                    <a key={s.name} href="#" className="about-link">
-                      <div className="about-link-left">
-                        <div className="about-link-dot" />
-                        <div>
-                          <div className="about-link-name">{s.name}</div>
-                          <div className="about-link-handle">{s.handle}</div>
+              <p className="contact-intro">{c.intro}</p>
+              <p className="contact-sub">{c.responseTime}</p>
+              {socials.length > 0 && (
+                <div style={{ marginTop: 40 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
+                    letterSpacing: '0.12em', textTransform: 'uppercase',
+                    color: 'var(--ink-3)', marginBottom: 14,
+                  }}>
+                    Also at
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {socials.map(s => (
+                      <a
+                        key={s.name}
+                        href={s.url || '#'}
+                        className="about-link"
+                        target={s.url && s.url !== '#' ? '_blank' : undefined}
+                        rel="noopener noreferrer"
+                      >
+                        <div className="about-link-left">
+                          <div className="about-link-dot" />
+                          <div>
+                            <div className="about-link-name">{s.name}</div>
+                            <div className="about-link-handle">{s.handle}</div>
+                          </div>
                         </div>
-                      </div>
-                      <svg width={12} height={12} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M2 7h10M8 3l4 4-4 4" />
-                      </svg>
-                    </a>
-                  ))}
+                        <svg width={12} height={12} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path d="M2 7h10M8 3l4 4-4 4" />
+                        </svg>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div>
@@ -88,7 +106,7 @@ export default function Contact() {
                 <form onSubmit={handleSubmit} noValidate>
                   {(
                     [
-                      ['name', 'Name', 'Your name', 'text'],
+                      ['name',  'Name',  'Your name',       'text'],
                       ['email', 'Email', 'you@example.com', 'email'],
                     ] as [keyof FormFields, string, string, string][]
                   ).map(([id, label, ph, type]) => (

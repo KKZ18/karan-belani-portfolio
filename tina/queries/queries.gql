@@ -1,3 +1,30 @@
+query globalQuery($relativePath: String!) {
+  global(relativePath: $relativePath) {
+    hero {
+      eyebrow
+      tagline1
+      tagline2
+      cta1Label
+      cta1Href
+      cta2Label
+      cta2Href
+    }
+    about {
+      headingLine1
+      headingLine2
+      bio
+      stats { value label }
+      socials { name handle url }
+      resumeUrl
+    }
+    contact {
+      heading
+      intro
+      responseTime
+    }
+  }
+}
+
 query postListQuery {
   postConnection {
     edges {
