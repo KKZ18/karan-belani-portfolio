@@ -3,9 +3,11 @@
 import { useRef, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
+const Globe = dynamic(() => import('react-globe.gl'), {
+  ssr: false,
+});
 
-// Approximate hex for oklch(0.66 0.12 194) — site accent teal
+// Approximate hex for oklch(0.66 0.12 194)
 const ACCENT = '#3ecfca';
 const ARC_COLOR_START = `${ACCENT}99`;
 const ARC_COLOR_END = `${ACCENT}22`;
@@ -24,15 +26,20 @@ type PointDatum = {
   lng: number;
 };
 
-function makeArcs(n: number): ArcDatum[] {
-  return Array.from({ length: n }, () => ({
-    startLat: (Math.random() - 0.5) * 180,
-    startLng: (Math.random() - 0.5) * 360,
-    endLat: (Math.random() - 0.5) * 180,
-    endLng: (Math.random() - 0.5) * 360,
-    animateTime: 4000 + Math.random() * 5000, // 4s–9s, each arc different
-    initialGap: Math.random(),                // stagger so pulses don't sync up
-  }));
+function makeArcs(points: PointDatum[], n: number): ArcDatum[] {
+  return Array.from({ length: n }, () => {
+    const start = points[Math.floor(Math.random() * points.length)];
+    const end = points[Math.floor(Math.random() * points.length)];
+
+    return {
+      startLat: start.lat,
+      startLng: start.lng,
+      endLat: end.lat,
+      endLng: end.lng,
+      animateTime: 4000 + Math.random() * 5000,
+      initialGap: Math.random(),
+    };
+  });
 }
 
 function makePoints(n: number): PointDatum[] {
@@ -44,35 +51,52 @@ function makePoints(n: number): PointDatum[] {
 
 export default function NetworkGlobe() {
   const globeEl = useRef<any>(null);
-  const [arcs] = useState<ArcDatum[]>(() => makeArcs(20));
+
+  const [mounted, setMounted] = useState(false);
+
   const [points] = useState<PointDatum[]>(() => makePoints(50));
 
+  const [arcs] = useState<ArcDatum[]>(() => makeArcs(points, 20));
+
   useEffect(() => {
-    let controls: any = null;
-
-    // After the user releases the globe, resume rotation after a short pause
-    const onDragEnd = () => {
-      setTimeout(() => { if (controls) controls.autoRotate = true; }, 1500);
-    };
-
-    const timer = setTimeout(() => {
-      const globe = globeEl.current;
-      if (!globe?.controls) return;
-      controls = globe.controls();
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.25;
-      controls.enableZoom = false;
-      controls.addEventListener('end', onDragEnd);
-
-
-
-    }, 300);
-
-    return () => {
-      clearTimeout(timer);
-      if (controls) controls.removeEventListener('end', onDragEnd);
-    };
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const timeout = setTimeout(() => {
+      if (!globeEl.current) return;
+
+      const controls = globeEl.current.controls();
+
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.5;
+
+      controls.enableZoom = false;
+      controls.enablePan = false;
+
+      controls.update();
+
+      const onDragStart = () => {
+        controls.autoRotate = false;
+      };
+
+      const onDragEnd = () => {
+        setTimeout(() => {
+          controls.autoRotate = true;
+          controls.update();
+        }, 1500);
+      };
+
+      controls.addEventListener('start', onDragStart);
+      controls.addEventListener('end', onDragEnd);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [mounted]);
+
+  if (!mounted) return null;
 
   return (
     <div className="globe-wrap">
@@ -80,6 +104,7 @@ export default function NetworkGlobe() {
         ref={globeEl}
         width={500}
         height={500}
+        animateIn={false}
         globeImageUrl={null}
         backgroundColor="rgba(0,0,0,0)"
         showGraticules
