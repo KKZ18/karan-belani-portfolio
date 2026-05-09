@@ -48,7 +48,8 @@ export function ScriptCopyBtn({
         setHighlightedCode(highlighted);
       } catch (error) {
         console.error("Error highlighting code:", error);
-        setHighlightedCode(`<pre>${command}</pre>`);
+        const escaped = command.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        setHighlightedCode(`<pre>${escaped}</pre>`);
       }
     }
 

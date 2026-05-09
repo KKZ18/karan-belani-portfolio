@@ -36,6 +36,7 @@ const VideoDialog = () => {
                                 className="size-full rounded-2xl"
                                 allowFullScreen
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                sandbox="allow-scripts allow-same-origin allow-presentation allow-fullscreen"
                             ></iframe>
                         </div>
                     </motion.div>
