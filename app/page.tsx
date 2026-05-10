@@ -8,6 +8,7 @@ import Contact from '@/components/sections/Contact';
 import type { Metadata } from 'next';
 import type { HeroContent } from '@/components/sections/Hero';
 import type { AboutContent, Social } from '@/components/sections/About';
+import type { CertificationsContent } from '@/components/sections/Certifications';
 import type { ContactContent } from '@/components/sections/Contact';
 
 export const dynamic = 'force-dynamic';
@@ -40,6 +41,7 @@ export default async function Home() {
   let posts: PostNode[] = [];
   let hero: HeroContent | null = null;
   let about: AboutContent | null = null;
+  let certifications: CertificationsContent | null = null;
   let contact: ContactContent | null = null;
   let socials: Social[] = [];
 
@@ -93,6 +95,19 @@ export default async function Home() {
           resumeUrl: g.about.resumeUrl ?? null,
         };
       }
+      if (g.certifications) {
+        certifications = {
+          items: (g.certifications.items ?? []).flatMap(item =>
+            item ? [{
+              name:     item.name     ?? '',
+              fullName: item.fullName ?? '',
+              issuer:   item.issuer   ?? '',
+              year:     item.year     ?? '',
+              image:    item.image    ?? '',
+            }] : []
+          ),
+        };
+      }
       if (g.contact) {
         contact = {
           heading:      g.contact.heading      ?? '',
@@ -120,7 +135,7 @@ export default async function Home() {
         <Hero content={hero} />
         <hr className="section-divider" />
         <About content={about} />
-        <Certifications />
+        <Certifications content={certifications} />
         <hr className="section-divider" />
         <BlogPreview posts={posts} />
         <Contact content={contact} socials={socials} />

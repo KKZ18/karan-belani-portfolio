@@ -84,6 +84,27 @@ const config = defineConfig({
           },
           {
             type: 'object',
+            name: 'certifications',
+            label: 'Certifications Section',
+            fields: [
+              {
+                type: 'object',
+                name: 'items',
+                label: 'Certificates',
+                list: true,
+                ui: { itemProps: (item: any) => ({ label: `${item?.name ?? 'Certificate'} — ${item?.issuer ?? ''}` }) },
+                fields: [
+                  { type: 'string', name: 'name',     label: 'Short Name (e.g. CCNA)' },
+                  { type: 'string', name: 'fullName', label: 'Full Name' },
+                  { type: 'string', name: 'issuer',   label: 'Issuer (e.g. Cisco)' },
+                  { type: 'string', name: 'year',     label: 'Year Obtained' },
+                  { type: 'image',  name: 'image',    label: 'Certificate Image' },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'object',
             name: 'contact',
             label: 'Contact Section',
             fields: [

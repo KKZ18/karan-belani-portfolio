@@ -17,6 +17,15 @@ query globalQuery($relativePath: String!) {
       socials { name handle url }
       resumeUrl
     }
+    certifications {
+      items {
+        name
+        fullName
+        issuer
+        year
+        image
+      }
+    }
     contact {
       heading
       intro

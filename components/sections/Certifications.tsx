@@ -10,35 +10,38 @@ function Arrow({ size = 10 }: { size?: number }) {
   );
 }
 
-type Cert = {
-  id: number;
-  name: string;
+export type CertItem = {
+  name:     string;
   fullName: string;
-  issuer: string;
-  year: string;
-  image: string;
+  issuer:   string;
+  year:     string;
+  image:    string;
 };
 
-const CERTS: Cert[] = [
-  {
-    id: 1,
-    name: 'CCNA',
-    fullName: 'Cisco Certified Network Associate',
-    issuer: 'Cisco',
-    year: '2023',
-    image: '/certs/ccna.jpg',
-  },
-  {
-    id: 2,
-    name: 'CCNP SVPN',
-    fullName: 'Implementing Secure Solutions with Virtual Private Networks',
-    issuer: 'Cisco',
-    year: '2024',
-    image: '/certs/ccnp-svpn.jpg',
-  },
-];
+export type CertificationsContent = {
+  items: CertItem[];
+};
 
-function CertModal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
+const DEFAULTS: CertificationsContent = {
+  items: [
+    {
+      name:     'CCNA',
+      fullName: 'Cisco Certified Network Associate',
+      issuer:   'Cisco',
+      year:     '2023',
+      image:    '/certs/ccna.jpg',
+    },
+    {
+      name:     'CCNP SVPN',
+      fullName: 'Implementing Secure Solutions with Virtual Private Networks',
+      issuer:   'Cisco',
+      year:     '2024',
+      image:    '/certs/ccnp-svpn.jpg',
+    },
+  ],
+};
+
+function CertModal({ cert, onClose }: { cert: CertItem; onClose: () => void }) {
   const [imgError, setImgError] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -90,8 +93,9 @@ function CertModal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
   );
 }
 
-export default function Certifications() {
-  const [modal, setModal] = useState<Cert | null>(null);
+export default function Certifications({ content }: { content?: CertificationsContent | null }) {
+  const items = content?.items?.length ? content.items : DEFAULTS.items;
+  const [modal, setModal] = useState<CertItem | null>(null);
 
   return (
     <div className="certs-section" id="certifications">
@@ -100,23 +104,23 @@ export default function Certifications() {
         <h2 className="section-heading">Certifications.</h2>
 
         <div className="certs-grid" style={{ marginTop: 40 }}>
-          {CERTS.map(c => (
+          {items.map(cert => (
             <div
-              key={c.id}
+              key={cert.name}
               className="cert-card"
-              onClick={() => setModal(c)}
+              onClick={() => setModal(cert)}
               role="button"
               tabIndex={0}
-              aria-label={`View ${c.name} certificate`}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModal(c); }}
+              aria-label={`View ${cert.name} certificate`}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModal(cert); }}
             >
-              <div className="cert-badge-wrap">{c.name}</div>
+              <div className="cert-badge-wrap">{cert.name}</div>
               <div>
-                <div className="cert-name">{c.fullName}</div>
-                <div className="cert-issuer">{c.issuer}</div>
+                <div className="cert-name">{cert.fullName}</div>
+                <div className="cert-issuer">{cert.issuer}</div>
               </div>
               <div className="cert-footer">
-                <span className="cert-date">{c.year}</span>
+                <span className="cert-date">{cert.year}</span>
                 <span className="cert-verify">View Cert <Arrow size={10} /></span>
               </div>
             </div>
