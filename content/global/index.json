@@ -13,15 +13,39 @@
     "headingLine2": "Lifelong learner.",
     "bio": "I'm Karan, a Network Engineer focused on building, securing, and troubleshooting real-world networks. I work with technologies like routing, switching, VPNs, and network security across enterprise environments. This blog is where I share hands-on labs, configurations, and practical insights from my daily work — no theory overload, just real networking.",
     "stats": [
-      { "value": "2+", "label": "Years experience" },
-      { "value": "4",  "label": "Certifications" },
-      { "value": "2+", "label": "Articles published" },
-      { "value": "∞",  "label": "Lab hours" }
+      {
+        "value": "2+",
+        "label": "Years experience"
+      },
+      {
+        "value": "4",
+        "label": "Certifications"
+      },
+      {
+        "value": "2+",
+        "label": "Articles published"
+      },
+      {
+        "value": "∞",
+        "label": "Lab hours"
+      }
     ],
     "socials": [
-      { "name": "LinkedIn",    "handle": "Karan Belani", "url": "#" },
-      { "name": "GitHub",      "handle": "@karanbelani", "url": "#" },
-      { "name": "Twitter / X", "handle": "@kbelani",     "url": "#" }
+      {
+        "name": "LinkedIn",
+        "handle": "Karan Belani",
+        "url": "https://www.linkedin.com/in/karan-belani-629095174/"
+      },
+      {
+        "name": "GitHub",
+        "handle": "@karanbelani",
+        "url": "#"
+      },
+      {
+        "name": "Twitter / X",
+        "handle": "@kbelani",
+        "url": "#"
+      }
     ],
     "resumeUrl": ""
   },
@@ -32,14 +56,14 @@
         "fullName": "Cisco Certified Network Associate",
         "issuer": "Cisco",
         "year": "2023",
-        "image": "/certs/ccna.jpg"
+        "image": "/uploads/certs/ccna.jpg"
       },
       {
         "name": "CCNP SVPN",
         "fullName": "Implementing Secure Solutions with Virtual Private Networks",
         "issuer": "Cisco",
         "year": "2024",
-        "image": "/certs/ccnp-svpn.jpg"
+        "image": "/uploads/certs/ccnp-svpn.jpg"
       }
     ]
   },
