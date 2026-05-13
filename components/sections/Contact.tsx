@@ -36,15 +36,36 @@ export default function Contact({
   const [form, setForm] = useState<FormFields>({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState<Partial<Record<keyof FormFields, boolean>>>({});
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const errs: Partial<Record<keyof FormFields, boolean>> = {};
     if (!form.name.trim()) errs.name = true;
     if (!form.email.includes('@')) errs.email = true;
     if (!form.message.trim()) errs.message = true;
     if (Object.keys(errs).length) { setErrors(errs); return; }
-    setSent(true);
+
+    setLoading(true);
+    setApiError(null);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setApiError((data as { error?: string }).error ?? 'Something went wrong. Please try again.');
+      } else {
+        setSent(true);
+      }
+    } catch {
+      setApiError('Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -138,12 +159,23 @@ export default function Contact({
                       }}
                     />
                   </div>
+                  {apiError && (
+                    <p style={{
+                      marginBottom: 12, padding: '10px 14px',
+                      border: '1px solid #f87171', borderRadius: 'var(--r)',
+                      background: '#fef2f2', color: '#b91c1c',
+                      fontFamily: 'var(--font-mono)', fontSize: '0.75rem',
+                    }}>
+                      {apiError}
+                    </p>
+                  )}
                   <button
                     type="submit"
                     className="btn-primary"
-                    style={{ width: '100%', justifyContent: 'center' }}
+                    style={{ width: '100%', justifyContent: 'center', opacity: loading ? 0.6 : 1 }}
+                    disabled={loading}
                   >
-                    Send Message <Arrow size={13} />
+                    {loading ? 'Sending…' : 'Send Message'} {!loading && <Arrow size={13} />}
                   </button>
                 </form>
               )}
