@@ -35,19 +35,8 @@
         "name": "LinkedIn",
         "handle": "Karan Belani",
         "url": "https://www.linkedin.com/in/karan-belani-629095174/"
-      },
-      {
-        "name": "GitHub",
-        "handle": "@karanbelani",
-        "url": "#"
-      },
-      {
-        "name": "Twitter / X",
-        "handle": "@kbelani",
-        "url": "#"
       }
-    ],
-    "resumeUrl": ""
+    ]
   },
   "certifications": {
     "items": [

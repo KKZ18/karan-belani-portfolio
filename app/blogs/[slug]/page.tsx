@@ -11,12 +11,18 @@ const CATEGORY_LABELS: Record<string, string> = {
   'routing-switching': 'Routing & Switching',
   'network-security': 'Network Security',
   labs: 'Labs',
+  'ccnp-svpn': 'CCNP SVPN',
+  ccna: 'CCNA',
+  CCNP_SISE: 'CCNP SISE',
 };
 
 const CATEGORY_TAG_CLASS: Record<string, string> = {
   'routing-switching': 'tag-routing',
   'network-security': 'tag-security',
   labs: 'tag-labs',
+  'ccnp-svpn': 'tag-security',
+  ccna: 'tag-routing',
+  CCNP_SISE: 'tag-security',
 };
 
 function categoryLabel(slug: string) { return CATEGORY_LABELS[slug] ?? slug; }

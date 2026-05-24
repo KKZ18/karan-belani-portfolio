@@ -146,6 +146,11 @@
   --border:   #DDDAD4;
 }
 
+.light .post-body,
+.light .post-body p {
+  color: var(--ink-2);
+}
+
 /* ── SHADCN DARK CLASS (preserved) ───────────────────────────── */
 .dark {
   --background: oklch(0.145 0 0);
