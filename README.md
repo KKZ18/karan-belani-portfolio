@@ -131,7 +131,7 @@ Posts are `.mdx` files in `content/posts/`. Frontmatter fields:
 title: "Post Title"
 description: "Short summary shown on cards"
 category: ccna           # matches a file in content/categories/
-publishedAt: 2025-01-10T00:00:00.000Z
+publishedAt: 2026-01-10T00:00:00.000Z
 readTime: "7 min read"
 ```
 

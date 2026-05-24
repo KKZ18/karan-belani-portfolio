@@ -79,13 +79,7 @@ export default async function BlogsPage() {
 
         <div className="site-footer">
           <div className="footer-inner">
-            <span className="footer-copy">© 2025 Karan Belani — Network Engineer</span>
-            <div className="footer-links">
-              <a href="/#about" className="footer-link">About</a>
-              <a href="/#certifications" className="footer-link">Certs</a>
-              <a href="/#blog" className="footer-link">Blog</a>
-              <a href="/#contact" className="footer-link">Contact</a>
-            </div>
+            <span className="footer-copy">© 2026 Karan Belani — Network Engineer</span>
           </div>
         </div>
       </main>

@@ -133,6 +133,12 @@ const config = defineConfig({
             name: 'description',
             label: 'Description',
           },
+          {
+            type: 'string',
+            name: 'color',
+            label: 'Tag Color',
+            options: ['routing', 'security', 'labs'],
+          },
         ],
       },
       {

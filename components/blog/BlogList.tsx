@@ -16,6 +16,7 @@ export type BlogPost = {
 export type BlogCategory = {
   id: string;
   name: string;
+  color?: string | null;
   _sys: { filename: string };
 };
 
@@ -32,23 +33,14 @@ function Arrow({ size = 12 }: { size?: number }) {
   );
 }
 
-const SLUG_TO_TAG: Record<string, string> = {
-  'routing-switching': 'tag-routing',
-  'network-security': 'tag-security',
-  labs: 'tag-labs',
-};
-
-function tagClass(slug: string): string {
-  return SLUG_TO_TAG[slug] ?? 'tag-routing';
+function tagClass(color: string | null | undefined): string {
+  if (color) return `tag-${color}`;
+  return 'tag-routing';
 }
 
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return '';
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
-
-function Tag({ category, label }: { category: string; label: string }) {
-  return <span className={`blog-tag ${tagClass(category)}`}>{label}</span>;
 }
 
 export default function BlogList({ posts, categories }: Props) {
@@ -68,10 +60,9 @@ export default function BlogList({ posts, categories }: Props) {
     });
   }, [posts, search, activeCategory]);
 
-  const categoryLabel = (slug: string): string => {
-    const cat = categories.find(c => c._sys.filename === slug);
-    return cat?.name ?? slug;
-  };
+  const findCat = (slug: string) => categories.find(c => c._sys.filename === slug);
+  const categoryLabel = (slug: string) => findCat(slug)?.name ?? slug;
+  const categoryTagClass = (slug: string) => tagClass(findCat(slug)?.color);
 
   const noPostsAtAll = posts.length === 0;
   const noResults = !noPostsAtAll && filtered.length === 0;
@@ -121,7 +112,7 @@ export default function BlogList({ posts, categories }: Props) {
           {filtered.map(p => (
             <Link key={p.id} href={`/blogs/${p._sys.filename}`} className="blogs-post-card">
               <div className="blogs-post-top">
-                <Tag category={p.category} label={categoryLabel(p.category)} />
+                <span className={`blog-tag ${categoryTagClass(p.category)}`}>{categoryLabel(p.category)}</span>
                 <div className="blog-meta">
                   {p.publishedAt && <span>{formatDate(p.publishedAt)}</span>}
                   {p.publishedAt && p.readTime && <span>·</span>}

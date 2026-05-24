@@ -58,7 +58,7 @@ export default function About({ content }: { content?: AboutContent | null }) {
 
           <div>
             <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
+              fontFamily: 'var(--font-mono)', fontSize: '0.85rem',
               letterSpacing: '0.12em', textTransform: 'uppercase',
               color: 'var(--ink-3)', marginBottom: 14,
             }}>

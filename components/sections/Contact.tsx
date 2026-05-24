@@ -81,7 +81,7 @@ export default function Contact({
               {socials.length > 0 && (
                 <div style={{ marginTop: 40 }}>
                   <div style={{
-                    fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
+                    fontFamily: 'var(--font-mono)', fontSize: '0.85rem',
                     letterSpacing: '0.12em', textTransform: 'uppercase',
                     color: 'var(--ink-3)', marginBottom: 14,
                   }}>

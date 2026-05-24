@@ -66,6 +66,7 @@ query categoryListQuery {
         id
         name
         description
+        color
         _sys {
           filename
         }
