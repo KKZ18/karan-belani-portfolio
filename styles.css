@@ -437,7 +437,7 @@
 .about-stat-label {
   font-family: var(--font-mono); font-size: 0.78rem;
   letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-2); margin-top: 6px;
+  color: var(--ink); margin-top: 6px;
 }
 .about-links { display: flex; flex-direction: column; gap: 10px; }
 .about-link {
