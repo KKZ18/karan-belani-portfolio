@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { BlogCategory } from '@/components/blog/BlogList';
 
 export type PostNode = {
   id: string;
@@ -10,7 +11,7 @@ export type PostNode = {
   _sys: { filename: string };
 };
 
-type Props = { posts: PostNode[] };
+type Props = { posts: PostNode[]; categories: BlogCategory[] };
 
 function Arrow({ size = 12 }: { size?: number }) {
   return (
@@ -20,39 +21,20 @@ function Arrow({ size = 12 }: { size?: number }) {
   );
 }
 
-function categoryLabel(slug: string): string {
-  const map: Record<string, string> = {
-    'routing-switching': 'Routing & Switching',
-    'network-security': 'Network Security',
-    labs: 'Labs',
-  };
-  return map[slug] ?? slug;
-}
-
-function tagClass(slug: string): string {
-  const map: Record<string, string> = {
-    'routing-switching': 'tag-routing',
-    'network-security': 'tag-security',
-    labs: 'tag-labs',
-  };
-  return map[slug] ?? 'tag-routing';
-}
-
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return '';
   const d = new Date(iso);
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
-function Tag({ category }: { category: string }) {
-  return (
-    <span className={`blog-tag ${tagClass(category)}`}>
-      {categoryLabel(category)}
-    </span>
-  );
-}
+export default function BlogPreview({ posts, categories }: Props) {
+  const findCat = (slug: string) => categories.find(c => c._sys.filename === slug);
+  const categoryLabel = (slug: string) => findCat(slug)?.name ?? slug;
+  const tagClass = (slug: string) => {
+    const color = findCat(slug)?.color;
+    return color ? `tag-${color}` : 'tag-routing';
+  };
 
-export default function BlogPreview({ posts }: Props) {
   return (
     <section id="blog">
       <div className="section">
@@ -81,7 +63,7 @@ export default function BlogPreview({ posts }: Props) {
           <div className="blog-featured">
             {posts.map(p => (
               <Link key={p.id} href={`/blogs/${p._sys.filename}`} className="blog-card">
-                <Tag category={p.category} />
+                <span className={`blog-tag ${tagClass(p.category)}`}>{categoryLabel(p.category)}</span>
                 <div className="blog-title">{p.title}</div>
                 {p.description && <div className="blog-desc">{p.description}</div>}
                 <div className="blog-meta">

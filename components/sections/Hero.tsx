@@ -60,10 +60,6 @@ export default function Hero({ content }: { content?: HeroContent | null }) {
           <NetworkGlobe />
         </div>
       </div>
-      <div className="hero-scroll">
-        <div className="hero-scroll-bar" />
-        Scroll
-      </div>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
 import Certifications from '@/components/sections/Certifications';
 import BlogPreview, { type PostNode } from '@/components/sections/BlogPreview';
+import type { BlogCategory } from '@/components/blog/BlogList';
 import Contact from '@/components/sections/Contact';
 import type { Metadata } from 'next';
 import type { HeroContent } from '@/components/sections/Hero';
@@ -50,6 +51,7 @@ function calcExperience(since: Date): string {
 
 export default async function Home() {
   let posts: PostNode[] = [];
+  let categories: BlogCategory[] = [];
   let hero: HeroContent | null = null;
   let about: AboutContent | null = null;
   let certifications: CertificationsContent | null = null;
@@ -57,10 +59,18 @@ export default async function Home() {
   let socials: Social[] = [];
 
   try {
-    const [postsResult, globalResult] = await Promise.all([
+    const [postsResult, globalResult, catsResult] = await Promise.all([
       client.queries.postListQuery(),
       client.queries.globalQuery({ relativePath: 'index.json' }),
+      client.queries.categoryListQuery(),
     ]);
+
+    const catEdges = catsResult.data?.categoryConnection?.edges ?? [];
+    for (const edge of catEdges) {
+      const n = edge?.node;
+      if (!n) continue;
+      categories.push({ id: n.id, name: n.name, color: n.color ?? null, _sys: { filename: n._sys.filename } });
+    }
 
     const edges = postsResult.data?.postConnection?.edges ?? [];
     const totalPosts = edges.filter(e => e?.node).length;
@@ -112,11 +122,12 @@ export default async function Home() {
         certifications = {
           items: (g.certifications.items ?? []).flatMap(item =>
             item ? [{
-              name:     item.name     ?? '',
-              fullName: item.fullName ?? '',
-              issuer:   item.issuer   ?? '',
-              year:     item.year     ?? '',
-              image:    item.image    ?? '',
+              name:      item.name      ?? '',
+              fullName:  item.fullName  ?? '',
+              issuer:    item.issuer    ?? '',
+              year:      item.year      ?? '',
+              image:     item.image     ?? '',
+              credlyUrl: item.credlyUrl ?? '',
             }] : []
           ),
         };
@@ -163,17 +174,11 @@ export default async function Home() {
         <About content={about} />
         <Certifications content={certifications} />
         <hr className="section-divider" />
-        <BlogPreview posts={posts} />
+        <BlogPreview posts={posts} categories={categories} />
         <Contact content={contact} socials={socials} />
         <div className="site-footer">
           <div className="footer-inner">
-            <span className="footer-copy">© 2025 Karan Belani — Network Engineer</span>
-            <div className="footer-links">
-              <a href="#about" className="footer-link">About</a>
-              <a href="#certifications" className="footer-link">Certs</a>
-              <a href="#blog" className="footer-link">Blog</a>
-              <a href="#contact" className="footer-link">Contact</a>
-            </div>
+            <span className="footer-copy">© 2026 Karan Belani — Network Engineer</span>
           </div>
         </div>
       </main>
