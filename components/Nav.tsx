@@ -55,8 +55,6 @@ export default function Nav() {
 
   return (
     <>
-      <a href="#main-content" className="skip-link">Skip to main content</a>
-
       <nav className="site-nav" aria-label="Main navigation">
         <div className="nav-inner">
           <a href="/" className="nav-logo">

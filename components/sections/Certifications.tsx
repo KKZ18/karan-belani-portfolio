@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-
 function Arrow({ size = 10 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -11,11 +9,12 @@ function Arrow({ size = 10 }: { size?: number }) {
 }
 
 export type CertItem = {
-  name:     string;
-  fullName: string;
-  issuer:   string;
-  year:     string;
-  image:    string;
+  name:      string;
+  fullName:  string;
+  issuer:    string;
+  year:      string;
+  image:     string;
+  credlyUrl?: string;
 };
 
 export type CertificationsContent = {
@@ -25,77 +24,26 @@ export type CertificationsContent = {
 const DEFAULTS: CertificationsContent = {
   items: [
     {
-      name:     'CCNA',
-      fullName: 'Cisco Certified Network Associate',
-      issuer:   'Cisco',
-      year:     '2023',
-      image:    '/certs/ccna.jpg',
+      name:      'CCNA',
+      fullName:  'Cisco Certified Network Associate',
+      issuer:    'Cisco',
+      year:      '2023',
+      image:     '/uploads/icon/ccna-cert-logo.png',
+      credlyUrl: 'https://www.credly.com/badges/eaa4d037-803a-4d65-9454-e91658a012c6/public_url',
     },
     {
-      name:     'CCNP SVPN',
-      fullName: 'Implementing Secure Solutions with Virtual Private Networks',
-      issuer:   'Cisco',
-      year:     '2024',
-      image:    '/certs/ccnp-svpn.jpg',
+      name:      'CCNP SCOR',
+      fullName:  'Implementing and Operating Cisco Security Core Technologies',
+      issuer:    'Cisco',
+      year:      '2024',
+      image:     '/uploads/icon/ccnp-scor-cert-logo.png',
+      credlyUrl: 'https://www.credly.com/badges/153e3076-b0a9-4dd2-b2ab-7c2d9b2cc456/public_url',
     },
   ],
 };
 
-function CertModal({ cert, onClose }: { cert: CertItem; onClose: () => void }) {
-  const [imgError, setImgError] = useState(false);
-  const closeRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    closeRef.current?.focus();
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
-
-  return (
-    <div
-      className="cert-modal-backdrop"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${cert.name} certificate`}
-    >
-      <div className="cert-modal" onClick={e => e.stopPropagation()}>
-        <button
-          ref={closeRef}
-          className="cert-modal-close"
-          onClick={onClose}
-          aria-label="Close certificate modal"
-        >
-          ×
-        </button>
-        <div className="cert-modal-meta">
-          <span className="cert-modal-name">{cert.name}</span>
-          <span className="cert-modal-issuer">{cert.issuer} · {cert.year}</span>
-        </div>
-        <div className="cert-modal-img-wrap">
-          {imgError ? (
-            <div className="cert-modal-placeholder">
-              <span>{cert.name}</span>
-            </div>
-          ) : (
-            <img
-              src={cert.image}
-              alt={`${cert.fullName} certificate`}
-              onError={() => setImgError(true)}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Certifications({ content }: { content?: CertificationsContent | null }) {
   const items = content?.items?.length ? content.items : DEFAULTS.items;
-  const [modal, setModal] = useState<CertItem | null>(null);
 
   return (
     <div className="certs-section" id="certifications">
@@ -105,16 +53,21 @@ export default function Certifications({ content }: { content?: CertificationsCo
 
         <div className="certs-grid" style={{ marginTop: 40 }}>
           {items.map(cert => (
-            <div
+            <a
               key={cert.name}
               className="cert-card"
-              onClick={() => setModal(cert)}
-              role="button"
-              tabIndex={0}
-              aria-label={`View ${cert.name} certificate`}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setModal(cert); }}
+              href={cert.credlyUrl || '#'}
+              target={cert.credlyUrl ? '_blank' : undefined}
+              rel="noopener noreferrer"
+              aria-label={`View ${cert.name} certificate on Credly`}
             >
-              <div className="cert-badge-wrap">{cert.name}</div>
+              <div className="cert-badge-wrap">
+                {cert.image ? (
+                  <img src={cert.image} alt={cert.name} />
+                ) : (
+                  cert.name
+                )}
+              </div>
               <div>
                 <div className="cert-name">{cert.fullName}</div>
                 <div className="cert-issuer">{cert.issuer}</div>
@@ -123,12 +76,10 @@ export default function Certifications({ content }: { content?: CertificationsCo
                 <span className="cert-date">{cert.year}</span>
                 <span className="cert-verify">View Cert <Arrow size={10} /></span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
-
-      {modal && <CertModal cert={modal} onClose={() => setModal(null)} />}
     </div>
   );
 }

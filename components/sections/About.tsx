@@ -29,9 +29,7 @@ const DEFAULTS: AboutContent = {
     { value: '∞',   label: 'Lab hours' },
   ],
   socials: [
-    { name: 'LinkedIn',    handle: 'Karan Belani', url: '#' },
-    { name: 'GitHub',      handle: '@karanbelani', url: '#' },
-    { name: 'Twitter / X', handle: '@kbelani',     url: '#' },
+    { name: 'LinkedIn', handle: 'Karan Belani', url: '#' },
   ],
 };
 
@@ -60,7 +58,7 @@ export default function About({ content }: { content?: AboutContent | null }) {
 
           <div>
             <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
+              fontFamily: 'var(--font-mono)', fontSize: '0.85rem',
               letterSpacing: '0.12em', textTransform: 'uppercase',
               color: 'var(--ink-3)', marginBottom: 14,
             }}>
@@ -86,15 +84,6 @@ export default function About({ content }: { content?: AboutContent | null }) {
                 </a>
               ))}
             </div>
-            {c.resumeUrl ? (
-              <a href={c.resumeUrl} className="resume-btn" target="_blank" rel="noopener noreferrer">
-                Download Resume <Arrow size={12} />
-              </a>
-            ) : (
-              <button className="resume-btn">
-                Download Resume <Arrow size={12} />
-              </button>
-            )}
           </div>
         </div>
       </div>

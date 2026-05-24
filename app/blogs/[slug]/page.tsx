@@ -4,23 +4,9 @@ import Nav from '@/components/Nav';
 import PostBody from '@/components/blog/PostBody';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import type { BlogCategory } from '@/components/blog/BlogList';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://karanbelani.com';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  'routing-switching': 'Routing & Switching',
-  'network-security': 'Network Security',
-  labs: 'Labs',
-};
-
-const CATEGORY_TAG_CLASS: Record<string, string> = {
-  'routing-switching': 'tag-routing',
-  'network-security': 'tag-security',
-  labs: 'tag-labs',
-};
-
-function categoryLabel(slug: string) { return CATEGORY_LABELS[slug] ?? slug; }
-function tagClass(slug: string) { return CATEGORY_TAG_CLASS[slug] ?? 'tag-routing'; }
 
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return '';
@@ -101,12 +87,19 @@ export default async function PostPage({ params }: Props) {
 
   let post: PostData | null = null;
   let related: RelatedPost[] = [];
+  const categories: BlogCategory[] = [];
 
   try {
-    const [postResult, allPostsResult] = await Promise.all([
+    const [postResult, allPostsResult, catsResult] = await Promise.all([
       client.queries.postQuery({ relativePath: `${slug}.mdx` }),
       client.queries.postListQuery(),
+      client.queries.categoryListQuery(),
     ]);
+
+    for (const edge of catsResult.data?.categoryConnection?.edges ?? []) {
+      const n = edge?.node;
+      if (n) categories.push({ id: n.id, name: n.name, color: n.color ?? null, _sys: { filename: n._sys.filename } });
+    }
 
     const p = postResult.data?.post;
     if (!p) notFound();
@@ -140,6 +133,10 @@ export default async function PostPage({ params }: Props) {
   }
 
   if (!post) notFound();
+
+  const findCat = (slug: string) => categories.find(c => c._sys.filename === slug);
+  const categoryLabel = (slug: string) => findCat(slug)?.name ?? slug;
+  const tagClass = (slug: string) => { const color = findCat(slug)?.color; return color ? `tag-${color}` : 'tag-routing'; };
 
   const blogPostingSchema = {
     '@context': 'https://schema.org',
@@ -202,13 +199,7 @@ export default async function PostPage({ params }: Props) {
 
         <div className="site-footer">
           <div className="footer-inner">
-            <span className="footer-copy">© 2025 Karan Belani — Network Engineer</span>
-            <div className="footer-links">
-              <a href="/#about" className="footer-link">About</a>
-              <a href="/#certifications" className="footer-link">Certs</a>
-              <Link href="/blogs" className="footer-link">Blog</Link>
-              <a href="/#contact" className="footer-link">Contact</a>
-            </div>
+            <span className="footer-copy">© 2026 Karan Belani — Network Engineer</span>
           </div>
         </div>
       </main>
