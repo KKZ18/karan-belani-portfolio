@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const TO = 'nairvaishak101@gmail.com';
+const TO = 'karanbelani18@gmail.com';
 const FROM = process.env.RESEND_FROM ?? 'Contact Form <onboarding@resend.dev>';
 
 export async function POST(req: Request) {
@@ -19,7 +19,8 @@ export async function POST(req: Request) {
   if (typeof name !== 'string' || !name.trim()) {
     return NextResponse.json({ error: 'Name is required' }, { status: 422 });
   }
-  if (typeof email !== 'string' || !email.includes('@')) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (typeof email !== 'string' || !emailRegex.test(email.trim())) {
     return NextResponse.json({ error: 'Valid email is required' }, { status: 422 });
   }
   if (typeof message !== 'string' || !message.trim()) {
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
   const { error } = await resend.emails.send({
     from: FROM,
     to: TO,
-    replyTo: email.trim(),
+    replyTo: [email.trim()],
     subject: `Portfolio contact from ${name.trim()}`,
     html: `
       <p><strong>Name:</strong> ${escHtml(name.trim())}</p>
