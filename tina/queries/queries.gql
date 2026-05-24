@@ -24,6 +24,7 @@ query globalQuery($relativePath: String!) {
         issuer
         year
         image
+        credlyUrl
       }
     }
     contact {

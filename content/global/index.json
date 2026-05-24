@@ -45,14 +45,16 @@
         "fullName": "Cisco Certified Network Associate",
         "issuer": "Cisco",
         "year": "2023",
-        "image": "/uploads/certs/ccna.jpg"
+        "image": "/uploads/icon/ccna-cert-logo.png",
+        "credlyUrl": "https://www.credly.com/badges/eaa4d037-803a-4d65-9454-e91658a012c6/public_url"
       },
       {
-        "name": "CCNP SVPN",
-        "fullName": "Implementing Secure Solutions with Virtual Private Networks",
+        "name": "CCNP SCOR",
+        "fullName": "Implementing and Operating Cisco Security Core Technologies",
         "issuer": "Cisco",
         "year": "2024",
-        "image": "/uploads/certs/ccnp-svpn.jpg"
+        "image": "/uploads/icon/ccnp-scor-cert-logo.png",
+        "credlyUrl": "https://www.credly.com/badges/153e3076-b0a9-4dd2-b2ab-7c2d9b2cc456/public_url"
       }
     ]
   },

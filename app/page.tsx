@@ -99,11 +99,12 @@ export default async function Home() {
         certifications = {
           items: (g.certifications.items ?? []).flatMap(item =>
             item ? [{
-              name:     item.name     ?? '',
-              fullName: item.fullName ?? '',
-              issuer:   item.issuer   ?? '',
-              year:     item.year     ?? '',
-              image:    item.image    ?? '',
+              name:      item.name      ?? '',
+              fullName:  item.fullName  ?? '',
+              issuer:    item.issuer    ?? '',
+              year:      item.year      ?? '',
+              image:     item.image     ?? '',
+              credlyUrl: item.credlyUrl ?? '',
             }] : []
           ),
         };
