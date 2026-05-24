@@ -37,6 +37,17 @@ const websiteSchema = {
   author: { '@type': 'Person', name: 'Karan Belani' },
 };
 
+function calcExperience(since: Date): string {
+  const now = new Date();
+  const totalMonths =
+    (now.getFullYear() - since.getFullYear()) * 12 +
+    (now.getMonth() - since.getMonth());
+  const halfYears = Math.floor(totalMonths / 6);
+  const value = halfYears / 2;
+  const display = Number.isInteger(value) ? String(value) : value.toFixed(1);
+  return `${display}+`;
+}
+
 export default async function Home() {
   let posts: PostNode[] = [];
   let hero: HeroContent | null = null;
@@ -52,6 +63,8 @@ export default async function Home() {
     ]);
 
     const edges = postsResult.data?.postConnection?.edges ?? [];
+    const totalPosts = edges.filter(e => e?.node).length;
+
     for (const edge of edges) {
       const n = edge?.node;
       if (!n) continue;
@@ -115,6 +128,19 @@ export default async function Home() {
           responseTime: g.contact.responseTime ?? '',
         };
       }
+    }
+
+    // Override stats with computed values now that all data is in scope
+    if (about) {
+      const certCount = certifications?.items.length ?? 0;
+      const expStr = calcExperience(new Date(2023, 8, 1));
+      about.stats = about.stats.map(s => {
+        const lbl = s.label.toLowerCase();
+        if (lbl.includes('cert')) return { ...s, value: String(certCount) };
+        if (lbl.includes('article') || lbl.includes('post') || lbl.includes('blog')) return { ...s, value: String(totalPosts) };
+        if (lbl.includes('year') || lbl.includes('experience') || lbl.includes('exp')) return { ...s, value: expStr };
+        return s;
+      });
     }
   } catch {
     // TinaCMS server unavailable — components fall back to built-in defaults
