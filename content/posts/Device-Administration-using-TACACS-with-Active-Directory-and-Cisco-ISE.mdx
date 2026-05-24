@@ -1,0 +1,254 @@
+---
+title: Device Administration using TACACS+ with Active Directory and Cisco ISE
+category: CCNP_SISE
+readTime: 08 Minutes
+description: 'This guide demonstrates how to integrate Cisco IOS device administration with Cisco Identity Services Engine and Active Directory to achieve centralized authentication, authorization, and role-based access control for network devices, improving security, management, and administrative efficiency across the network.'
+---
+
+### **Lab topology: &#xA;**&#xA;![](/uploads/Post-2-ISE-AD-TACACS+/Picture1.png)
+
+Here, Winserver is my AD server and vIOS is my default gateway. 
+
+## PART 1:
+
+### Joining Cisco ISE with Active Directory or Configuring AD in Cisco ISE.
+
+#### Step 1:
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture2.png)
+
+Go into Work Centers>Device Administration>Ext Id Sources.
+
+Click on Ext Id Sources. 
+
+#### Step 2: Click on Active Directory> Add
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture3.png)
+
+After clicking you will be required to give the Join Point Name you can name it anything you want. 
+
+In Active Directory Domain, give the domain name of your AD. 
+
+**Note:- Make sure the DNS server that you have configured for ISE is able to resolve the domain name of your AD server otherwise it won’t be able to join AD.**
+
+#### Step 3: Click on Yes to join the Active Directory Domain and insert the admin account of your AD.
+
+ 
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture4.png)
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture5.png)
+
+![](/uploads/Post-2-ISE-AD-TACACS+/Picture6.png)
+
+#### Step 4: Retrieve the user groups from the AD that you want to use for Device Administration
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture7.png)
+
+ Click on Select groups from directory and then retrieve groups to retrieve all the groups that are present in the AD.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture8.png)
+
+Here I have created 2 groups in AD 1. Employees and 2. Contractors
+
+Employees will have full admin access rights to the networking devices and Contractors will have read only access to the networking devices.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture9.png)
+
+Here, the first step of adding the AD to Cisco ISE is completed.
+
+## PART 2:
+
+### Configuring Device Administration on Cisco ISE.
+
+#### Step 1: 
+
+#### Enable Device Admin Services on Cisco ISE. 
+
+Go to Administration>System>Deployment>Ise(If it is in standalone)>Enable Device Admin Service
+
+This will enable the Device Admin Service on Cisco ISE.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture10.png)
+![](/uploads/Post-2-ISE-AD-TACACS+/Picture11.png)
+
+ 
+
+Alternatively you can enable Device Admin Service by going to 
+
+Work Centers>Device Administration>Deployment
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture12.png)
+
+You can click on All policy service nodes or you can select nodes by specifying the nodes.
+
+### Step 2:
+
+#### Adding Network Devices on Cisco ISE
+
+Go to Work Centers>Device Administration>Network Resources>Network Devices>Add
+
+Fill in the required details of your target network device that you want to add and tick on TACACS Authentication settings
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture13.png)
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture14.png)
+
+Remember the Shared Secret key as it would be used to add on the router while configuring AAA.
+
+Click Submit.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture15.png)
+
+### Step 3:
+
+Create TACACS Profile for assigning privilege levels to the Users.
+
+Navigate to Work Centers>Device Administration>Policy Elements>Results>TACACS Profiles>ADD
+
+Add the default and maximum privilege level that you want for the users and click submit.
+
+As it is the full access I will keep it as 15 so the user will directly start with privilege exec mode(#)
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture15.png)
+
+For Read only users I will keep default privilege level to 1 and Maximum privilege levels to 15 so that they will start with User exec mode (>) and then go to privilege exec mode (#) after entering the enable password but they will be limited to only show commands.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture16.png)
+
+### Step 4:
+
+#### Create TACACS Command Set.
+
+Go to Work Centers>Device Administration>Policy Elements>Results>TACACS Command Sets>ADD
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture17.png)
+
+Just click on “Permit any command that is not listed below” and then submit.
+
+This will allow all the commands for the administrator.
+
+Now let’s see how to limit the access to only show commands 
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture18.png)
+
+The \* sign after show indicates that the user can use all of the show command,
+
+If you want to limit the show command to only particular arguments then add the keyword in Arguments section.
+
+for eg: show ip route, show ip interface brief, show running-configuration etc.
+
+### Step 5:
+
+After creating TACACS profile and command set, it is now time to create a Device Admin Policy Set by merging the TACACS profile and command set.
+
+Navigate to Work Centers>Device Administration>Device Admin Policy Sets
+
+Here I am keeping the Default policy set. 
+
+Now click on the View(>) Sign on the far right.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture19.png)
+
+Keep the Authentication policy as it is, unless you want to strictly use your AD for authentication source, then drop down the use and select the AD join name that we created.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture20.png)
+
+Now go in the Authorization policy here we will merge the TACACS Profile and Command sets.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture21.png)
+
+Now add the conditions, Select Device Type and select All Device Types unless you have created network device group.
+
+ 
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture22.png)
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture23.png)![](/uploads/Post-2-ISE-AD-TACACS+/Picture24.png)
+
+Then add your external ID AD group.
+
+Then add and select the TACACS profile and command set that you want to use and click save, here I am using the full access.
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture25.png)
+
+Here our Device Admin configuration is done on the ISE
+
+## PART 4:
+
+### Cisco IOS AAA Configuration:
+
+On Cisco IOS We have to create the AAA Server group and add the Authentication, Authorization and Accounting Commands.
+
+### Step 1:
+
+#### Adding the ISE server and creating AAA server group
+
+EDGEROUTER(config)#aaa new-model    // To enable AAA services
+
+EDGEROUTER(config)#tacacs server ise   // create a server named ise, you can give any name
+
+EDGEROUTER(config-server-tacacs)#address ipv4 192.168.2.10  // your ISE server address
+
+EDGEROUTER(config-server-tacacs)#key Cisco123  // Shared Key that you added in Cisco ISE Network Devices
+
+EDGEROUTER(config-server-tacacs)#exit
+
+EDGEROUTER(config)#aaa group server tacacs+ isegroup  // create a tacacs+ group, you can give any name
+
+EDGEROUTER(config-sg-tacacs+)#server name ise  //add the ise server that we created above.
+
+### Step 2:
+
+After adding the ISE server and group, now its time to configure Authentication, Authorization and Accounting on IOS.
+
+**Note: “//” Stands for comments do not use it in actual command.**
+
+Authentication:
+
+Here I am using default method which applies to line vty instead of manually adding the authentication method in line vty
+
+EDGEROUTER(config)#aaa authentication login default group tacacs+ local // uses tacacs+ group that we created and if it fails then it goes for local credentials
+
+EDGEROUTER(config)#aaa authentication enable default group tacacs+ enable //Authentication for enable password
+
+Authorization:
+
+EDGEROUTER(config)#aaa authorization exec default group tacacs+ local //used for privilege level authorization
+
+EDGEROUTER(config)#aaa authorization config-commands //used for configuration commands authorization
+
+EDGEROUTER(config)#aaa authorization commands 1 default group tacacs+ local //used for privilege level command authorization, which privilege level has access to what commands.
+
+EDGEROUTER(config)#aaa authorization commands 15 default group tacacs+ local
+
+Accounting:
+
+EDGEROUTER(config)#aaa accounting exec default start-stop group tacacs+ //accounting for privilege level
+
+EDGEROUTER(config)#aaa accounting commands 15 default start-stop group tacacs+ //accounting for commands
+
+EDGEROUTER(config)#aaa accounting commands 1 default start-stop group tacacs+
+
+## Part 5: 
+
+### Verification
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture26.png)
+
+After entering the correct credentials I got the access of the router.
+
+To check for logs on ISE Operations>TACACS Live Logs
+
+ 
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture27.png)
+
+![](/uploads/Post-2-ISE-AD-TACACS+/Picture28.png)
+
+For users with read only access:
+
+ ![](/uploads/Post-2-ISE-AD-TACACS+/Picture29.png)
+
+Command authorization failed as I have not allowed this command in the command sets for read only users.
+![](/uploads/Post-2-ISE-AD-TACACS+/Picture30.png)
