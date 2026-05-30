@@ -202,6 +202,8 @@
   }
 }
 
+::selection { background: var(--accent); color: var(--bg); }
+
 /* ── ANIMATIONS ───────────────────────────────────────────────── */
 
 /* Hero eyebrow pulsing dot */
@@ -318,6 +320,15 @@
   transition: color 0.2s;
 }
 .mobile-menu-link:hover { color: var(--accent); }
+.mobile-menu-theme {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--border); padding-top: 20px; margin-top: auto;
+}
+.mobile-menu-theme-label {
+  font-family: var(--font-mono); font-size: 0.8rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3);
+}
 
 /* HERO */
 .hero {
@@ -717,6 +728,7 @@
 @media (max-width: 900px) {
   .nav-desktop-links, .nav-desktop-cta { display: none; }
   .nav-hamburger { display: flex; }
+  .nav-theme-toggle-desktop { display: none; }
   .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 56px; }
 }
 @media (max-width: 768px) {

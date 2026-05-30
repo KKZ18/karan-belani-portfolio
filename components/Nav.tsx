@@ -75,7 +75,9 @@ export default function Nav() {
             )}
           </ul>
 
-          <ThemeToggle />
+          <div className="nav-theme-toggle-desktop">
+            <ThemeToggle />
+          </div>
 
           <button
             className="nav-hamburger"
@@ -108,6 +110,10 @@ export default function Nav() {
             </a>
           )
         )}
+        <div className="mobile-menu-theme">
+          <span className="mobile-menu-theme-label">Theme</span>
+          <ThemeToggle />
+        </div>
       </nav>
     </>
   );
