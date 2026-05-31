@@ -1,5 +1,7 @@
-import { defineConfig } from "tinacms";
+import React from 'react';
+import { defineConfig, type TinaCMS } from "tinacms";
 import nextConfig from '../next.config'
+import { PublishScreen } from '../components/tina/PublishScreen'
 
 const config = defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
@@ -187,6 +189,21 @@ const config = defineConfig({
         ],
       },
     ],
+  },
+  cmsCallback: (cms: TinaCMS) => {
+    cms.plugins.add({
+      __type: 'screen',
+      name: 'Publish to Live',
+      navCategory: 'Site',
+      layout: 'fullscreen',
+      Icon: () => (
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+          <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+        </svg>
+      ),
+      Component: PublishScreen,
+    });
+    return cms;
   },
 });
 
