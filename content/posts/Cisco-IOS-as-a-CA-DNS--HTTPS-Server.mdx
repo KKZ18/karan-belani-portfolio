@@ -100,8 +100,6 @@ Re-enter password:
 
 ```
 
-Plain Text
-
 | Command                  | Purpose                                                                                                                                              |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ip http server           | Enables the HTTP listener required for SCEP (TCP 80). Without this, client enrollment fails.                                                         |
@@ -147,8 +145,6 @@ CA Certificate
 
 ```
 
-Plain Text
-
 ## 4. Certificate Enrollment — Client Router 4.1 Configure Trustpoint on R-CA-CLIENT-WEB
 
 A trustpoint is an IOS container that holds PKI credentials. Configuring a trustpoint here tells the client where the CA is (SCEP URL), what identity to request (subject-name), and which RSA key pair to use.
@@ -168,8 +164,6 @@ R-CA-CLIENT(ca-trustpoint)# exit
 
 ```
 
-Plain Text
-
 **4.2 Authenticate the CA (Install Root CA Cert)** This step downloads the Root CA certificate from the CA server via SCEP and installs it into the trustpoint. The fingerprint shown should be verified out-of-band against the CA server's output.
 
 ```
@@ -184,8 +178,6 @@ Trustpoint CA certificate accepted.
 
 
 ```
-
-Plain Text
 
 ### 4.3 Enroll — Generate and Send the CSR
 
@@ -205,8 +197,6 @@ Request certificate from CA? [yes/no]: yes
 
 
 ```
-
-Plain Text
 
 ### 4.4 Verify the Enrolled Certificate
 
@@ -256,8 +246,6 @@ We have both our Signed certificate and ROOT CA cert.
 
 ```
 
-Plain Text
-
 💡 What to Look For Two certificates should appear under 'show crypto pki certificates':
 
 1\. Certificate (serial 02) — your device's identity certificate, signed by the CA
@@ -283,8 +271,6 @@ R-CA-DNS-WEB-SRV(config)# ip domain lookup
 
 
 ```
-
-Plain Text
 
 | Command                | Purpose                                                                                                                                 |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -314,8 +300,6 @@ Client query for 'websrv.n2s.in'
 
 
 ```
-
-Plain Text
 
 **5.3 Verify DNS** Our internal client PC has 192.168.1.1 as DNS server
 
@@ -349,8 +333,6 @@ R-CA-CLIENT-WEB(config)# no ip http server
 
 ```
 
-Plain Text
-
 | Command                            | Purpose                                                                                                               |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | ip http secure-server              | Enables the TLS (HTTPS) listener on TCP 443.                                                                          |
@@ -374,8 +356,6 @@ HTTP secure server active session modules: ALL
 
 
 ```
-
-Plain Text
 
 💡 TLS Version Hardening (IOS-XE) On IOS-XE platforms you can restrict to TLS 1.2 only:
 
