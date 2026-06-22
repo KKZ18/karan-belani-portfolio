@@ -63,6 +63,14 @@
         "year": "2026",
         "image": "/uploads/CCNP-SEC/Cisco_Specialist_Security_150x150.jpg",
         "credlyUrl": "https://www.credly.com/badges/c7c9c20e-733f-4aee-9fbf-fb3d86b76147/public_url"
+      },
+      {
+        "name": "CCNP Security",
+        "fullName": "Cisco Certified Network Professional Security (CCNP Security)",
+        "issuer": "Cisco",
+        "year": "2026",
+        "image": "/uploads/CCNP-SEC/ccnp_security_med.jpg",
+        "credlyUrl": "https://www.credly.com/badges/5456b3c8-1b8f-4269-8930-27dab4705928/public_url"
       }
     ]
   },
