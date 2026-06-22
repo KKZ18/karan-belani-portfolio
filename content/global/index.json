@@ -55,6 +55,14 @@
         "year": "2025",
         "image": "/uploads/icon/ccnp-scor-cert-logo.png",
         "credlyUrl": "https://www.credly.com/badges/153e3076-b0a9-4dd2-b2ab-7c2d9b2cc456/public_url"
+      },
+      {
+        "name": "CCNP SVPN ",
+        "fullName": "Cisco Certified Specialist - Network Security VPN",
+        "issuer": "Cisco",
+        "year": "2026",
+        "image": "/uploads/CCNP-SEC/Cisco_Specialist_Security_150x150.jpg",
+        "credlyUrl": "https://www.credly.com/badges/c7c9c20e-733f-4aee-9fbf-fb3d86b76147/public_url"
       }
     ]
   },
