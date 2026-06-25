@@ -493,8 +493,8 @@
 .filter-pill:hover { border-color: var(--ink-3); color: var(--ink-2); }
 .filter-pill.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 .certs-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 2px; background: var(--border); border: 1px solid var(--border);
   border-radius: var(--r); overflow: hidden;
 }
 .cert-card {
@@ -741,6 +741,7 @@
   .nav-inner { padding: 0 20px; }
   .site-footer { padding: 32px 20px; }
   .mobile-menu { padding: 48px 20px; }
+  .certs-grid { grid-template-columns: 1fr; }
 }
 .globe-wrap {
   width: 500px;
